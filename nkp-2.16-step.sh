@@ -33,19 +33,31 @@ dnf download --resolve bash-completion
 
 # Transfer the entire folder to your airgapped machine
 cd auto-complete
+sudo rpm -Uvh *.rpm
 
+# --- For current user ---
+grep -qxF 'source <(kubectl completion bash)' ~/.bashrc || \
+  echo 'source <(kubectl completion bash)' >> ~/.bashrc
 
-#set alias and autocomplete
-sudo vi ~/.bashrc
-source <(kubectl completion bash) # set up autocomplete in bash into the current shell, bash-completion package should be installed first.
-echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
-echo "alias k=kubectl" >> ~/.bashrc
-echo "complete -o default -F __start_kubectl k" >> ~/.bashrc
+grep -qxF 'alias k=kubectl' ~/.bashrc || \
+  echo 'alias k=kubectl' >> ~/.bashrc
 
-# Add kubectl completion to root's bashrc
-echo "source <(kubectl completion bash)" | sudo tee -a /root/.bashrc > /dev/null
-echo "alias k=kubectl" | sudo tee -a /root/.bashrc > /dev/null
-echo "complete -o default -F __start_kubectl k" | sudo tee -a /root/.bashrc > /dev/null
+grep -qxF 'complete -o default -F __start_kubectl k' ~/.bashrc || \
+  echo 'complete -o default -F __start_kubectl k' >> ~/.bashrc
+
+# --- For root user ---
+sudo bash -c '
+  grep -qxF "source <(kubectl completion bash)" /root/.bashrc || \
+    echo "source <(kubectl completion bash)" >> /root/.bashrc
+  grep -qxF "alias k=kubectl" /root/.bashrc || \
+    echo "alias k=kubectl" >> /root/.bashrc
+  grep -qxF "complete -o default -F __start_kubectl k" /root/.bashrc || \
+    echo "complete -o default -F __start_kubectl k" >> /root/.bashrc
+'
+
+# Apply immediately without relogin ---
+source ~/.bashrc
+
 
 # Install docker
 tar -zxvf offline-docker-el9.tar.gz
