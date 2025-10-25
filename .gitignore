@@ -1,0 +1,10 @@
+# VS Code
+.vscode/
+
+# Python (if applicable)
+__pycache__/
+*.pyc
+
+# Node (if applicable)
+node_modules/
+dist/
