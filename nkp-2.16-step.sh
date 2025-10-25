@@ -24,6 +24,17 @@ chpasswd:
 runcmd:
   - systemctl enable --now sshd
 
+# install bash complete
+midir -p auto-complete
+
+# from internet machine, download the following
+sudo dnf install -y dnf-plugins-core
+dnf download --resolve bash-completion
+
+# Transfer the entire folder to your airgapped machine
+cd auto-complete
+
+
 #set alias and autocomplete
 sudo vi ~/.bashrc
 source <(kubectl completion bash) # set up autocomplete in bash into the current shell, bash-completion package should be installed first.
