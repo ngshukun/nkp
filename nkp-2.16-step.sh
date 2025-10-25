@@ -246,3 +246,5 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
 sudo journalctl -u kubelet -xe --no-pager
 sudo less /var/log/cloud-init-output.log
 sudo crictl ps -a | head
+
+test
