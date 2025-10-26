@@ -1,0 +1,61 @@
+# Configure Velero as Object Backup
+# In NKP UI, enable Velero application, ignore the warning from 
+# rook ceph, you are not using rook ceph
+# in you bastion, configure the following file
+
+vi velero-nutanix-credentials.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: velero-nutanix-credentials #you can create your own name
+  namespace: kommander  #tthe namespace you want your secret to be in
+type: Opaque
+stringData:
+  aws: |
+    [velero-backup] # give a meaningful name for this profile
+    aws_access_key_id = BpDowo9cZSwU_q4lVmvrSIrb8XjJ7Uv2
+    aws_secret_access_key = hsC3gyY5LJWVzleTKBow70Oj_BijsVVn
+k apply -f velero-nutanix-credentials.yaml
+
+vi velero-config-map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kommander
+  name: velero-overrides #give config-map a name
+data:
+  values.yaml: |
+    credentials:
+      extraSecretRef: ""
+    configuration:
+      backupStorageLocation:
+      - name: velero-backup #give a name for your BSL
+        bucket: velero-backup #the name of the bucket, I will reference to the name I give for object
+        provider: "aws"   # Corrected indentation (align with `name` and `bucket`)
+        default: true     # Corrected indentation
+        config:
+          region: us-east-1
+          s3ForcePathStyle: "true"
+          insecureSkipTLSVerify: "true"
+          s3Url: "https://velero-backup.nkp.prism-central.cluster.local"   #FQDN of your object and port
+          profile: velero-backup #this profile name is the same as give in your secret,
+        credential:
+          key: aws
+          name: velero-nutanix-credentials    #the name of your secret
+k apply -f velero-config-map.yaml
+
+# update velero
+kubectl --kubeconfig=shukun-upgrade.conf -n kommander patch \
+appdeployment velero --type="merge" --patch-file=/dev/stdin <<EOF
+spec:
+  configOverrides:
+    name: velero-overrides
+EOF
+
+kubectl --kubeconfig=sk-upgrade.conf get hr -n kommander velero -o
+jsonpath='{.spec.valuesFrom[?(@.name=="velero-overrides")]}'
+
+kubectl --kubeconfig=shukun-upgrade.conf get pods -A --kubeconfig=
+shukun-upgrade.conf |grep velero
+
+kubectl --kubeconfig=shukun-upgrade.conf get bsl -n ${WORKSPACE_NAMESPACE} default
