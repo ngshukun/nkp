@@ -77,6 +77,23 @@ EOF
 kubectl -n demo get pdb
 kubectl -n demo describe pdb hello-pdb
 
+# upgrade kommamnder to 2.15.1
+cd nkp-v2.15.1/
+sudo cp cli/nkp /usr/bin/
+nkp version
+export KUBECONFIG=/home/nutanix/nkp-v2.14.2/sk-upgrade.conf
+k get no
+nkp upgrade kommander   --kommander-applications-repository ./application-repositories/kommander-applications-v2.15.1.tar.gz --charts-bundle ./application-charts/nkp-kommander-charts-bundle-v2.15.1.tar.gz
+# check for all deployments and pod 
+kubectl -n kommander get deployments,pods
+
+
+# upgrade Management Cluster (konvoy +  Kubernetes) to 2.15.1
+export VM_IMAGE_NAME=nkp-rocky-9.5-release-1.32.3-20250430150550.qcow2
+export MGMT_CLUSTER_NAME=sk-upgrade
+nkp upgrade cluster nutanix \
+  --cluster-name ${MGMT_CLUSTER_NAME} \
+  --vm-image ${VM_IMAGE_NAME}
 
 
 
