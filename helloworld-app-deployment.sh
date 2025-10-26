@@ -1,7 +1,4 @@
-# This show how to upgrade NKP from 2.14 --> 2.15 --> 2.16
-# In this cluster, we create a sample application, and perform backup on it.
-# Create namespace and manifest create as below
-
+# Helloworld-app-manifest
 kubectl create ns demo
 
 cat <<EOF | kubectl -n demo apply -f -
@@ -54,8 +51,3 @@ EOF
 
 # Check for pod and svc is up
 k -n demo get pods,svc
-
-# create secret for objects
-kubectl -n kommander create secret generic cloud-credentials \
-  --from-literal=aws_access_key_id=BpDowo9cZSwU_q4lVmvrSIrb8XjJ7Uv2 \
-  --from-literal=aws_secret_access_key=hsC3gyY5LJWVzleTKBow70Oj_BijsVVn
