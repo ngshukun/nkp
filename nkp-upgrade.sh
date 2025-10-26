@@ -95,5 +95,8 @@ nkp upgrade cluster nutanix \
   --cluster-name ${MGMT_CLUSTER_NAME} \
   --vm-image ${VM_IMAGE_NAME}
 
+# Upgrade take around 30-45min
+
+
 
 
