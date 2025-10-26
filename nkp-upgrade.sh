@@ -55,4 +55,10 @@ EOF
 # Check for pod and svc is up
 k -n demo get pods,svc
 
+# Performing a pre-upgrade of demo app
+velero backup create demo-preupgrade --include-namespaces demo
+velero backup describe demo-preupgrade --details
+velero backup get
+
+
 

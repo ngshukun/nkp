@@ -45,7 +45,7 @@ data:
 k apply -f velero-config-map.yaml
 
 # update velero
-kubectl --kubeconfig=shukun-upgrade.conf -n kommander patch \
+kubectl --kubeconfig=sk-upgrade.conf -n kommander patch \
 appdeployment velero --type="merge" --patch-file=/dev/stdin <<EOF
 spec:
   configOverrides:
@@ -55,7 +55,9 @@ EOF
 kubectl --kubeconfig=sk-upgrade.conf get hr -n kommander velero -o
 jsonpath='{.spec.valuesFrom[?(@.name=="velero-overrides")]}'
 
-kubectl --kubeconfig=shukun-upgrade.conf get pods -A --kubeconfig=
-shukun-upgrade.conf |grep velero
+kubectl --kubeconfig=sk-upgrade.conf get pods -A --kubeconfig=
+sk-upgrade.conf |grep velero
 
-kubectl --kubeconfig=shukun-upgrade.conf get bsl -n ${WORKSPACE_NAMESPACE} default
+kubectl --kubeconfig=sk-upgrade.conf get bsl -n kommander
+
+
