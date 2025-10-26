@@ -60,5 +60,23 @@ velero backup create demo-preupgrade --include-namespaces demo
 velero backup describe demo-preupgrade --details
 velero backup get
 
+# Add Pod Disruption Budget for the app
+cat <<'EOF' | kubectl -n demo apply -f -
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: hello-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: hello
+EOF
+
+#verify PDB
+kubectl -n demo get pdb
+kubectl -n demo describe pdb hello-pdb
+
+
 
 
