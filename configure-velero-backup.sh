@@ -60,4 +60,17 @@ sk-upgrade.conf |grep velero
 
 kubectl --kubeconfig=sk-upgrade.conf get bsl -n kommander
 
+# Testing for backup and restore
+export VELERO_NAMESPACE=kommander
+velero backup get
+kubectl delete ns demo --wait=true
+velero restore create --from-backup demo-preupgrade
+velero restore get
+
+# To be able to see the UI from node, use the command
+kubectl -n demo patch svc hello-svc -p '{"spec":{"type":"NodePort"}}'
+
+# To reset back to clusterIP
+kubectl -n demo patch svc hello-svc -p '{"spec":{"type":"ClusterIP"}}'
+
 
