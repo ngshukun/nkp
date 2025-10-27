@@ -84,6 +84,8 @@ nkp version
 export KUBECONFIG=/home/nutanix/nkp-v2.14.2/sk-upgrade.conf
 k get no
 nkp upgrade kommander   --kommander-applications-repository ./application-repositories/kommander-applications-v2.15.1.tar.gz --charts-bundle ./application-charts/nkp-kommander-charts-bundle-v2.15.1.tar.gz
+# For NKP 2.16.0
+nkp upgrade kommander   --kommander-applications-repository ./application-repositories/kommander-applications-v2.16.0.tar.gz
 # check for all deployments and pod 
 kubectl -n kommander get deployments,pods
 
