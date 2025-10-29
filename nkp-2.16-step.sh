@@ -110,11 +110,15 @@ EOF
 openssl genrsa -out nkp-upgrade.server.key 2048
 openssl req -new -key nkp-upgrade.server.key -out nkp-upgrade.server.csr -config nkp-openssl.cnf
 
-x509 -req -in nkp-upgrade.server.csr \
-  -CA nsk-intermediate-ca.crt -CAkey nsk-intermediate-ca.key \
-  -CAserial nsk-intermediate-ca.srl \
-  -out nkp-upgrade.server.crt -days 3650 -sha256 \
-  -extensions v3_leaf -extfile nkp-openssl.cnf
+openssl x509 -req -in nkp-upgrade.server.csr \
+  -CA nsk-intermediate-ca.crt \
+  -CAkey nsk-intermediate-ca.key \
+  -CAcreateserial \
+  -out nkp-upgrade.server.crt \
+  -days 3650 -sha256 \
+  -extensions v3_leaf \
+  -extfile nkp-openssl.cnf
+
 
 # To check if the generated cert matches the ca-chain.cert
 openssl verify -CAfile nsk-ca-chain.crt nkp-upgrade.server.crt
