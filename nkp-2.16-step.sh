@@ -25,14 +25,13 @@ runcmd:
   - systemctl enable --now sshd
 
 # install bash complete
-midir -p auto-complete
+mkdir -p auto-complete
 
 # from internet machine, download the following
 sudo dnf install -y dnf-plugins-core
 dnf download --resolve bash-completion
 
 # Transfer the entire folder to your airgapped machine
-cd auto-complete
 sudo rpm -Uvh *.rpm
 
 # --- For current user ---
@@ -64,6 +63,14 @@ tar -zxvf offline-docker-el9.tar.gz
 cd docker-offline/
 sudo dnf install -y *.rpm
 sudo systemctl enable --now docker
+
+# let you run docker without sudo
+sudo usermod -aG docker $USER
+
+# log out/in OR:
+newgrp docker
+#check if docker is enable
+sudo docker ps
 
 # generate cert for all required server
 # Example below is to create a cert for cluster "nkp-upgrade"
@@ -111,18 +118,6 @@ x509 -req -in nkp-upgrade.server.csr \
 
 # To check if the generated cert matches the ca-chain.cert
 openssl verify -CAfile nsk-ca-chain.crt nkp-upgrade.server.crt
-
-
-
-
-# let you run docker without sudo
-sudo usermod -aG docker $USER
-
-# log out/in OR:
-newgrp docker
-#check if docker is enable
-sudo docker ps
-
 
 #install k9s
 
