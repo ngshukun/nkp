@@ -1,0 +1,36 @@
+ On NKP UI, access to Identity Providers > Add Identity Provider
+ Add Identity Provider > selec LDAP
+
+ Name  - this is the nane you will see when you first log in to NKP UI
+ example: nsk.local AD
+ Host IP -  address of your AD
+ example 10.129.42.99:389
+ Bind DN - in AD go to User, select a user, right click properties, look for attribute Editor, look for distinguishedName
+ example: CN=shukun,CN=Users,DC=ntnxlab,DC=local
+ check Insecure No SSl
+ check Insecure Skip TLS Verify
+ User Search Base DN - similar to Bind DN, in AD go to User, right click properties, look for attribute Editor, look for distinguishedName 
+ example: CN=Users,DC=ntnxlab,DC=local
+ User Search Username
+ example: sAMAccountName
+ User search Scope
+ example: sub (search the whole sub tree)
+ User Search ID attribute
+ example: DN
+ User Search E-mail
+ example: userPrincipalName
+ User Search Name
+ example: name
+
+save
+click group > Create group
+Name - give the group a name
+example: NKP Admins
+if only give user a name click add user
+example: shukun.ntnxlab.local
+save
+go to access control > cluster role binding
+you should see NKP Admins
+select add role
+for full admin role add Cluster Admin role, dko-kommander-admin 
+
