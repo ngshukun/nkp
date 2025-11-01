@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Secret
+metadata:
+ name: nutanix-csi-credentials-files
+ namespace: ntnx-system
+stringData:
+# Provide Nutanix Prism Element credentials which is a default UI credential separated by colon in "key:".
+# Provide Nutanix File Server credentials which is a REST API user created on File server UI separated by colon in "files-key:".
+  key: "10.129.42.11:9440:shukun:P@ssw0rd"
+  files-key: "fs01.ntnxlab.local:shukun:P@ssw0rd"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+    name: nutanix-files
+provisioner: csi.nutanix.com
+parameters:
+  dynamicProv: ENABLED
+  nfsServerName: fs01
+  csi.storage.k8s.io/provisioner-secret-name: nutanix-csi-credentials-files
+  csi.storage.k8s.io/provisioner-secret-namespace: ntnx-system
+  csi.storage.k8s.io/node-publish-secret-name: nutanix-csi-credentials-files
+  csi.storage.k8s.io/node-publish-secret-namespace: ntnx-system
+  csi.storage.k8s.io/controller-expand-secret-name: nutanix-csi-credentials-files
+  csi.storage.k8s.io/controller-expand-secret-namespace: ntnx-system
+  storageType: NutanixFiles
+allowVolumeExpansion: true

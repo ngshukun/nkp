@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-rwx-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nutanix-files
+  resources:
+    requests:
+      storage: 1Gi
