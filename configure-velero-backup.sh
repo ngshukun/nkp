@@ -37,7 +37,7 @@ data:
           region: us-east-1
           s3ForcePathStyle: "true"
           insecureSkipTLSVerify: "true"
-          s3Url: "https://velero-backup.nkp.prism-central.cluster.local"   #FQDN of your object and port
+          s3Url: "https://velero-backup.nkp.sub1.ntnxlab.local"   #FQDN of your object and port
           profile: velero-backup #this profile name is the same as give in your secret,
         credential:
           key: aws
