@@ -1,0 +1,24 @@
+#cloud-config
+preserve_hostname: false
+fqdn: nutanix
+
+# Create the user and give sudo
+users:
+  - default
+  - name: nutanix
+    groups: [wheel]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+
+# Set password (plaintext) – not recommended for production
+ssh_pwauth: true
+chpasswd:
+  expire: false
+  users:
+    - name: nutanix
+      password: "nutanix/4u"   # quotes avoid any YAML surprises
+      type: text
+
+# sshd is usually enabled already, but harmless:
+runcmd:
+  - systemctl enable --now sshd
