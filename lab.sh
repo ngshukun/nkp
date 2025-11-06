@@ -33,11 +33,11 @@ ssh-keygen
 vi .env
 # VM Setting
 export CONTROL_PLANE_REPLICAS=3
-export CONTROL_PLANE_VCPUS=4
+export CONTROL_PLANE_VCPUS=8
 export CONTROL_PLANE_CORES_PER_VCPU=1
 export CONTROL_PLANE_MEMORY_GIB=16
 export WORKER_REPLICAS=2
-export WORKER_VCPUS=8
+export WORKER_VCPUS=16
 export WORKER_CORES_PER_VCPU=1
 export WORKER_MEMORY_GIB=32
 export SSH_KEY_FILE=/home/nutanix/.ssh/id_rsa.pub
