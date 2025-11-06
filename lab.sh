@@ -32,7 +32,7 @@ ssh-keygen
 # enter 3 times to generate ssh key
 vi .env
 # VM Setting
-export CONTROL_PLANE_REPLICAS=3
+export CONTROL_PLANE_REPLICAS=1
 export CONTROL_PLANE_VCPUS=8
 export CONTROL_PLANE_CORES_PER_VCPU=1
 export CONTROL_PLANE_MEMORY_GIB=16
