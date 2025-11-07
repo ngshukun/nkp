@@ -4,7 +4,7 @@ tar -zxvf k9s_Linux_amd64.tar.gz
 sudo mv k9s /usr/bin/
 tar -zxvf offline-docker-el9.tar.gz
 cd docker-offline/
-sudo dnf install -y *.rpm
+sudo dnf install -y *.rpm --disablerepo='*' --nogpgcheck
 sudo systemctl enable --now docker
 # let you run docker without sudo
 sudo usermod -aG docker $USER
