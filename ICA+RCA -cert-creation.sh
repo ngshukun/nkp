@@ -20,12 +20,8 @@ SERVER_IP1="10.129.42.20"
 # generate root ca cert
 cat > v3_ca.ext <<'EOF'
 [ req ]
-distinguished_name = dn
 x509_extensions    = v3_ca
 prompt             = no
-
-[ dn ]
-# left empty since we'll pass -subj on the CLI
 
 [ v3_ca ]
 basicConstraints = critical, CA:true
@@ -34,7 +30,7 @@ subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid:always,issuer
 EOF
 
-openssl genrsa -aes256 -out root.key 4096
+openssl genrsa -out root.key 4096
 chmod 600 root.key
 
 openssl req -new -x509 -sha256 -days "$ROOT_DAYS" \
@@ -44,7 +40,7 @@ openssl req -new -x509 -sha256 -days "$ROOT_DAYS" \
   -out root.crt
 
 #create Intermediate cert
-openssl genrsa -aes256 -out ica.key 4096
+openssl genrsa -out ica.key 4096
 chmod 600 ica.key
 
 openssl req -new -sha256 \
@@ -54,14 +50,10 @@ openssl req -new -sha256 \
 
 cat > v3_ica.ext <<'EOF'
 [ req ]
-distinguished_name = dn
-x509_extensions    = v3_ca
+x509_extensions    = v3_ica
 prompt             = no
 
-[ dn ]
-# left empty since we'll pass -subj on the CLI
-
-[ v3_ca ]
+[ v3_ica ]
 basicConstraints = critical, CA:true
 keyUsage = critical, keyCertSign, cRLSign
 subjectKeyIdentifier = hash
@@ -71,7 +63,7 @@ EOF
 openssl x509 -req -sha256 -days "$ICA_DAYS" \
   -in ica.csr \
   -CA root.crt -CAkey root.key -CAcreateserial \
-  -config v3_ica.ext -extensions v3_ica \
+  -extfile v3_ica.ext -extensions v3_ica \
   -out ica.crt
 
 cat ica.crt root.crt > ca-chain.crt
