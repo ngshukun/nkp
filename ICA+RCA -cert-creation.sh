@@ -10,20 +10,28 @@ ROOT_DAYS=3650                             # ~10 years
 ICA_DAYS=3650
 SERVER_DAYS=825                            # ~27 months (common max for public TLS)
 # For v3_server.ext
-SERVER_CN="registry.ntnxlab.local"   # CN not used for matching, but keep it tidy
-SERVER_HOST1="registry.ntnxlab.local"
-SERVER_IP1="10.129.42.93"
+SERVER_CN="baremetal.ntnxlab.local"   # CN not used for matching, but keep it tidy
+SERVER_HOST1="baremetal.ntnxlab.local"
+SERVER_IP1="10.129.42.20"
 # SERVER_HOST2="*.ntnxlab.local"
 # SERVER_IP2="10.129.42.94"
 
 
 # generate root ca cert
 cat > v3_ca.ext <<'EOF'
-[v3_ca]
-basicConstraints=critical,CA:TRUE,pathlen:1
-keyUsage=critical,keycertsSign,cRLSign
-subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid:always
+[ req ]
+distinguished_name = dn
+x509_extensions    = v3_ca
+prompt             = no
+
+[ dn ]
+# left empty since we'll pass -subj on the CLI
+
+[ v3_ca ]
+basicConstraints = critical, CA:true
+keyUsage = critical, keyCertSign, cRLSign
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
 EOF
 
 openssl genrsa -aes256 -out root.key 4096
@@ -32,7 +40,7 @@ chmod 600 root.key
 openssl req -new -x509 -sha256 -days "$ROOT_DAYS" \
   -key root.key \
   -subj "/C=$COUNTRY/O=$ORG/CN=$ROOT_CN" \
-  -extfile v3_ca.ext -extensions v3_ca \
+  -config v3_ca.ext -extensions v3_ca \
   -out root.crt
 
 #create Intermediate cert
@@ -45,17 +53,25 @@ openssl req -new -sha256 \
   -out ica.csr
 
 cat > v3_ica.ext <<'EOF'
-[v3_ica]
-basicConstraints=critical,CA:TRUE,pathlen=0
-keyUsage=critical,keycertsSign,cRLSign
-subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid,issuer
+[ req ]
+distinguished_name = dn
+x509_extensions    = v3_ca
+prompt             = no
+
+[ dn ]
+# left empty since we'll pass -subj on the CLI
+
+[ v3_ca ]
+basicConstraints = critical, CA:true
+keyUsage = critical, keyCertSign, cRLSign
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
 EOF
 
 openssl x509 -req -sha256 -days "$ICA_DAYS" \
   -in ica.csr \
   -CA root.crt -CAkey root.key -CAcreateserial \
-  -extfile v3_ica.ext -extensions v3_ica \
+  -config v3_ica.ext -extensions v3_ica \
   -out ica.crt
 
 cat ica.crt root.crt > ca-chain.crt
