@@ -363,5 +363,25 @@ helm --kubeconfig ${CLUSTER_NAME}.conf \
 --set pcPassword="P@ssw0rd"
 
 
+#Create a Nutanix Volumes CSI Storage Class
+kubectl --kubeconfig ${CLUSTER_NAME}.conf create -f - <<EOF
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: nutanix-volume
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+parameters:
+   prismElementRef: 00062793-fca2-e7d7-6c47-246e962fe638 #PrismElement uuid. SSH into PE and use "ncli cluster info" to get the uuid
+   csi.storage.k8s.io/fstype: ext4
+   storageContainer: SelfServiceContainer #Change this if you want to use another storage container
+   storageType: NutanixVolumes
+provisioner: csi.nutanix.com
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+EOF
+
+
 #Create CAPI components on the NKP Cluster. Be patient, this takes up to 5 mins
 nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf
