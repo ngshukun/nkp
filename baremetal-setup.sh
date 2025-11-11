@@ -382,6 +382,9 @@ allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 EOF
 
+#Remove the localvolumeprovisioner as a default storage class
+kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}
+
 
 #Create CAPI components on the NKP Cluster. Be patient, this takes up to 5 mins
 nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf
