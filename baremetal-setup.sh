@@ -399,9 +399,13 @@ spec:
 
 k --kubeconfig baremetal.conf apply -f pvc-test.yaml
 
-#Remove the localvolumeprovisioner as a default storage class
-kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}
+# Remove the localvolumeprovisioner as a default storage class
+kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 
 
-#Create CAPI components on the NKP Cluster. Be patient, this takes up to 5 mins
+# Create CAPI components on the NKP Cluster.
+# if timeout occurred, check if the pvc are still bound to local provisioner
+# delete the pvc and recreate the capi-components
 nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf
+
+
