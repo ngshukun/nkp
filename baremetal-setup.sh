@@ -418,3 +418,6 @@ kubectl --kubeconfig=${CLUSTER_NAME}.conf get preprovisionedmachines
 kubectl --kubeconfig=${CLUSTER_NAME}.conf get machines
 kubectl --kubeconfig=${CLUSTER_NAME}.conf get clusters
 
+
+# delete bootstrap cluster
+nkp delete bootstrap
