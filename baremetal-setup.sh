@@ -364,7 +364,7 @@ helm --kubeconfig ${CLUSTER_NAME}.conf \
 
 
 #Create a Nutanix Volumes CSI Storage Class
-kubectl --kubeconfig ${CLUSTER_NAME}.conf create -f - <<EOF
+vi storage-storage.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -372,15 +372,32 @@ metadata:
     annotations:
       storageclass.kubernetes.io/is-default-class: "true"
 parameters:
-   prismElementRef: 00062793-fca2-e7d7-6c47-246e962fe638 #PrismElement uuid. SSH into PE and use "ncli cluster info" to get the uuid
+   prismElementRef: 000622c1-636a-e6fb-0000-000000027af9 #PrismElement uuid. SSH into PE and use "ncli cluster info" to get the uuid
    csi.storage.k8s.io/fstype: ext4
    storageContainer: SelfServiceContainer #Change this if you want to use another storage container
    storageType: NutanixVolumes
 provisioner: csi.nutanix.com
 reclaimPolicy: Delete
 allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
-EOF
+volumeBindingMode: Immediate
+
+k --kubeconfig baremetal.conf  apply -f storage-class.yaml
+
+# test if storageclass works
+vi pvc-test.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-rwo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nutanix-volume
+  resources:
+    requests:
+      storage: 1Gi
+
+k --kubeconfig baremetal.conf apply -f pvc-test.yaml
 
 #Remove the localvolumeprovisioner as a default storage class
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}
