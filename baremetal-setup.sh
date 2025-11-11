@@ -410,3 +410,11 @@ nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf
 
 # Move CAPI resources into actual cluster
 nkp move capi-resources --to-kubeconfig ${CLUSTER_NAME}.conf
+
+# verifying move is successfull
+kubectl --kubeconfig=${CLUSTER_NAME}.conf get nodes
+kubectl --kubeconfig=${CLUSTER_NAME}.conf get preprovisionedinventories
+kubectl --kubeconfig=${CLUSTER_NAME}.conf get preprovisionedmachines
+kubectl --kubeconfig=${CLUSTER_NAME}.conf get machines
+kubectl --kubeconfig=${CLUSTER_NAME}.conf get clusters
+
