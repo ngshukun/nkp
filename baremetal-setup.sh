@@ -408,4 +408,5 @@ kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisio
 # delete the pvc and recreate the capi-components
 nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf
 
-
+# Move CAPI resources into actual cluster
+nkp move capi-resources --to-kubeconfig ${CLUSTER_NAME}.conf
