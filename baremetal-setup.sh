@@ -421,3 +421,51 @@ kubectl --kubeconfig=${CLUSTER_NAME}.conf get clusters
 
 # delete bootstrap cluster
 nkp delete bootstrap
+
+# set kubeconfig to actual mgmt cluster
+export KUBECONFIG=~/${CLUSTER_NAME}.conf 
+
+k get no
+
+# setup metallb
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.129.42.21-10.129.42.21 #Replace with your actual MetalLB IP Range. We need minimally 1 address that is not part of a DHCP Pool
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - default
+
+
+#Generate NKP Kommander installation components
+#replace 'version' with the actual version of NKP
+nkp install kommander --init --airgapped \
+--kommander-applications-repository application-repositories/kommander-applications-v2.16.0.tar.gz \
+> kommander.yaml
+
+# in kommander, below are the must have for NKP conponent
+# dex
+# dex-k8s-authenticator
+# gatekeeper
+# git-operator
+# kommander
+# kommander-ui
+# kubefed
+# reloader
+# traefik
+# traefik-forward-auth-mgmt
+
+# install kommander
+nkp install kommander --airgapped \
+--kommander-applications-repository application-repositories/kommander-applications-v2.16.0.tar.gz \
+--installer-config kommander.yaml
