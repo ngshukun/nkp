@@ -1,0 +1,15 @@
+# test if storageclass works
+vi pvc-test.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-rwo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nutanix-volume
+  resources:
+    requests:
+      storage: 1Gi
+
+k apply -f pvc-test.yaml
