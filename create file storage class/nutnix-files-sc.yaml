@@ -12,7 +12,7 @@ stringData:
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-    name: nutanix-files
+    name: nutainix-files
 provisioner: csi.nutanix.com
 parameters:
   dynamicProv: ENABLED

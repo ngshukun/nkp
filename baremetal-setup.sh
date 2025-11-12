@@ -151,10 +151,10 @@ export SSH_USER="konvoy"
 export SSH_PRIVATE_KEY_FILE="/home/nutanix/.ssh/id_rsa"
 
 #Replace 1.31.4_ubuntu_22.04_x86_64.tar.gz with the name of the package bundle you downloaded within the /nkp-version/kib/artifacts directory earlier
-export OS_PACKAGES_BUNDLE=1.31.4_ubuntu_22.04_x86_64.tar.gz
+export OS_PACKAGES_BUNDLE=1.33.2_ubuntu_22.04_x86_64.tar.gz
 
 #Replace containerd-1.7.22-d2iq.1-ubuntu-22.04-x86_64.tar.gz with the name of the respective containerd bundle and OS type within the /nkp-version/kib/artifacts directory. 
-export CONTAINERD_BUNDLE=containerd-1.7.24-d2iq.1-ubuntu-22.04-x86_64.tar.gz
+export CONTAINERD_BUNDLE=containerd-1.7.27-d2iq.1-ubuntu-22.04-x86_64.tar.gz
 
 #Ensure that you’re in the /nkp-'version'/kib/ directory
 #replace 'version' with the actual version of NKP
