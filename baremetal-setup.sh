@@ -310,7 +310,7 @@ nkp create cluster preprovisioned \
   --cluster-name ${CLUSTER_NAME} \
   --control-plane-endpoint-host ${CLUSTER_VIP} \
   --virtual-ip-interface ${CLUSTER_VIP_ETH_INTERFACE} \
-  --pre-provisioned-inventory-file=/home/nutanix/nkp/nkp-v2.16.0/preprovisioned_inventory.yaml \
+  --pre-provisioned-inventory-file /home/nutanix/nkp/nkp-v2.16.0/preprovisioned_inventory.yaml \
   --ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
   --registry-mirror-url=${REGISTRY_URL} \
   --registry-mirror-username=${REGISTRY_USERNAME} \
