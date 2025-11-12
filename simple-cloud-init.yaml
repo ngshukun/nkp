@@ -22,3 +22,41 @@ chpasswd:
 # sshd is usually enabled already, but harmless:
 runcmd:
   - systemctl enable --now sshd
+
+
+
+# usage of ssh login example
+
+#cloud-config
+preserve_hostname: false
+fqdn: nutanix
+
+# Do not create any distro default user
+users:
+  - name: konvoy
+    gecos: "Konvoy User"
+    groups: [wheel]
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDG7+w3foxaDg9fLRQX2RIxZeHvmI/tbAy1owDYvDP3H9n0eS8oOd30MG2/zRCcx4HOz0bsA21f+Kl2FbyWW8R05iZEdYcG4vpzebHtBNIQVsrL4j5w04GoNJYB1yJgbsDma6bqxdruC6oKerFWjjqpqzlPuZSHtrVdvmlLHxoPpzfErO5j+4G2vRztk2iFMFOpNeDWvUvfjii9xFbY4OV1YC6Wck9BFI5gBOgIZCj5OpUjYRR3bSYpaSDvm9ZTkORTEZCIM1+ZlWi57xqwvNP7/9Zk1yP+xzA+5MkDFnECJ9C5a2f9HwPipGG1RB/8+LwojLXDf+bGt+n8VXswJcqav7feXA/UqS8gr3XA0qrfjKsJOWMRdHnzJVeHf+J2kv3zZB7Tjtty1wpj7Tf9xzmbaEpnxoSfDuj4LB+rWVm+5edxz0h2SWlwwp+f4pv/uiC3Svmc5dihuT5jS2zAv7LP7Hj6QEL8t78I4XDeFRyYQ7p9OSgHYpWQ5NQD8t485mU= nutanix@nutanix
+
+# Disable password authentication (keys only) and root SSH
+ssh_pwauth: false
+disable_root: true
+
+# (Usually already on) – ensure sshd is running and enforce key-only auth
+write_files:
+  - path: /etc/ssh/sshd_config.d/99-cloud-init-hardening.conf
+    permissions: "0644"
+    content: |
+      PasswordAuthentication no
+      ChallengeResponseAuthentication no
+      UsePAM yes
+      PubkeyAuthentication yes
+      PermitRootLogin no
+
+runcmd:
+  - systemctl daemon-reload
+  - systemctl enable --now sshd
+  - systemctl restart sshd
