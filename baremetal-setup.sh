@@ -306,6 +306,9 @@ kubectl label secret ${SSH_PRIVATE_KEY_SECRET_NAME} clusterctl.cluster.x-k8s.io/
 # ssh to all the master and worker nodes
 sudo ls /opt/dkp/packages/offline-repo/Packages || sudo bash -c 'gunzip -c /opt/dkp/packages/offline-repo/Packages.gz > /opt/dkp/packages/offline-repo/Packages'
 
+# ssh to all the master and worker nodes to update the registry url 
+echo "10.129.42.93 registry.ntnxlab.local" | sudo tee -a /etc/hosts
+
 nkp create cluster preprovisioned \
   --cluster-name ${CLUSTER_NAME} \
   --control-plane-endpoint-host ${CLUSTER_VIP} \
