@@ -12,8 +12,8 @@ export SSH_KEY_FILE=/home/nutanix/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
 export CLUSTER_NAME='sk-upgrade' # <-- the name you create on the VM
-export CONTROL_PLANE_IP=10.129.42.29 # <-- ivan provide 10 kubevip
-export LB_IP_RANGE=10.129.42.30-10.129.42.30 # <-- ivan provide 10 metallb
+export CONTROL_PLANE_IP= 172.16.108.10/20/30/40/50/60/70/80/90/110 # <-- ivan provide 10 kubevip
+export LB_IP_RANGE=172.16.108.11/21/31/41/51/61/71/81/91/111 # <-- ivan provide 10 metallb
 export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://172.16.101.30:9440
 #export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
 #export NUTANIX_PC_CA_B64="$(base64 -w 0 < "$NUTANIX_PC_CA")"
