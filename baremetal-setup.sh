@@ -215,7 +215,7 @@ export CLUSTER_NAME=baremetal
 
 #Set NKP KubeAPI Server VIP
 #Replace with the desired IP Address for the KubeAPI Server. Make sure it’s on the same subnet as your Virtual Machines.
-export CLUSTER_VIP="10.129.42.20"
+export CLUSTER_VIP="10.129.42.27"
 
 #Set VM Ethernet Interface Name
 #Replace with the actual interface name in the control plane VMs. find it by using `ip address` and looking for the interface with the VM’s IP Address
@@ -223,11 +223,11 @@ export CLUSTER_VIP_ETH_INTERFACE="ens3"
 
 #Set Control Plane VMs information
 #Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="10.129.42.59"
+export CONTROL_PLANE_1_ADDRESS="10.129.42.117"
 
 #Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.152"
+export WORKER_1_ADDRESS="10.129.42.137"
 export WORKER_2_ADDRESS="10.129.42.129"
 
 #Set SSH Information to Virtual Machines
