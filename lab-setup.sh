@@ -1,4 +1,8 @@
+# copy nkp binary to /use/bin
+sudo cp cli/nkp /usr/bin/
 
+# copy kubectl binary to /usr/bin
+sudo cp kubectl /usr/bin/
 
 vi .env
 # VM Setting 
