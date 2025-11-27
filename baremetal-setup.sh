@@ -215,7 +215,7 @@ export CLUSTER_NAME=baremetal
 
 #Set NKP KubeAPI Server VIP
 #Replace with the desired IP Address for the KubeAPI Server. Make sure it’s on the same subnet as your Virtual Machines.
-export CLUSTER_VIP="10.129.42.27"
+export CLUSTER_VIP="10.129.42.20"
 
 #Set VM Ethernet Interface Name
 #Replace with the actual interface name in the control plane VMs. find it by using `ip address` and looking for the interface with the VM’s IP Address

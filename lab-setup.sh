@@ -1,3 +1,5 @@
+
+
 vi .env
 # VM Setting 
 export CONTROL_PLANE_REPLICAS=1
