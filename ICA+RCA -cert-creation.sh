@@ -3,16 +3,16 @@ mkdir -p certs
 cd certs
 
 COUNTRY="SG"
-ORG="YourOrg Ltd"
-ROOT_CN="YourOrg Root CA"
-ICA_CN="YourOrg Intermediate CA"
+ORG="nutanix"
+ROOT_CN="nutanix"
+ICA_CN="nutanix"
 ROOT_DAYS=3650                             # ~10 years
 ICA_DAYS=3650
 SERVER_DAYS=825                            # ~27 months (common max for public TLS)
 # For v3_server.ext
-SERVER_CN="baremetal.ntnxlab.local"   # CN not used for matching, but keep it tidy
-SERVER_HOST1="baremetal.ntnxlab.local"
-SERVER_IP1="10.129.42.20"
+SERVER_CN="registry.ntnxlab.local"   # CN not used for matching, but keep it tidy
+SERVER_HOST1="registry.ntnxlab.local"
+SERVER_IP1="10.129.42.41"
 # SERVER_HOST2="*.ntnxlab.local"
 # SERVER_IP2="10.129.42.94"
 
@@ -70,7 +70,7 @@ cat ica.crt root.crt > ca-chain.crt
 
 
 
-# This section is for generate of server cert
+# This section is for generate of server cert, such as harbor, nkp, or workload cert
 openssl genrsa -out server.key 2048
 
 # CSR
