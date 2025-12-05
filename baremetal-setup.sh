@@ -139,7 +139,7 @@ export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
 
 #Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.157"
+export WORKER_1_ADDRESS="10.129.42.105"
 export WORKER_2_ADDRESS="10.129.42.157"
 export WORKER_3_ADDRESS="10.129.42.66"
 export WORKER_4_ADDRESS="10.129.42.79"
@@ -202,7 +202,7 @@ nkp create bootstrap
 
 vi .env
 #Ensure that we’re using a registry FQDN, with the suffix to the repository that we’re going to be mirroring the images to.
-export REGISTRY_URL=https://registry.ntnxlab.local/mirror
+export REGISTRY_URL=https://10.129.42.41/mirror
 #Replace the Username with your actual username
 export REGISTRY_USERNAME=shukun
 #Replace the Password with your actual password
