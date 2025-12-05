@@ -263,8 +263,8 @@ spec:
     # Note that the command line parameter --control-plane-replicas determines how many control plane nodes will actually be used.
     #
     - address: $CONTROL_PLANE_1_ADDRESS
- #   - address: $CONTROL_PLANE_2_ADDRESS
- #   - address: $CONTROL_PLANE_3_ADDRESS
+    - address: $CONTROL_PLANE_2_ADDRESS
+    - address: $CONTROL_PLANE_3_ADDRESS
   sshConfig:
     port: 22
     # This is the username used to connect to your infrastructure. This user must be root or
@@ -290,8 +290,8 @@ spec:
   hosts:
     - address: $WORKER_1_ADDRESS
     - address: $WORKER_2_ADDRESS
-#    - address: $WORKER_3_ADDRESS
-#    - address: $WORKER_4_ADDRESS
+    - address: $WORKER_3_ADDRESS
+    - address: $WORKER_4_ADDRESS
   sshConfig:
     port: 22
     user: $SSH_USER
