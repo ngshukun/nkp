@@ -316,14 +316,14 @@ nkp create cluster preprovisioned \
   --cluster-name ${CLUSTER_NAME} \
   --control-plane-endpoint-host ${CLUSTER_VIP} \
   --virtual-ip-interface ${CLUSTER_VIP_ETH_INTERFACE} \
-  --pre-provisioned-inventory-file /home/nutanix/nkp/nkp-v2.16.0/preprovisioned_inventory.yaml \
+  --pre-provisioned-inventory-file /home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml \
   --ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
   --registry-mirror-url=${REGISTRY_URL} \
   --registry-mirror-username=${REGISTRY_USERNAME} \
   --registry-mirror-password=${REGISTRY_PASSWORD} \
   --registry-mirror-cacert=${REGISTRY_CA} \
-  --worker-replicas=2 \
-  --control-plane-replicas=1 \
+  --worker-replicas=4 \
+  --control-plane-replicas=3 \
   --dry-run \
   --output=yaml \
   > ${CLUSTER_NAME}.yaml

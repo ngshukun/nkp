@@ -60,3 +60,37 @@ runcmd:
   - systemctl daemon-reload
   - systemctl enable --now sshd
   - systemctl restart sshd
+
+
+# cloud init for nkp-v2.16.1
+#cloud-config
+preserve_hostname: false
+fqdn: ubuntu-pro-node
+
+users:
+  - default
+
+  - name: konvoy
+    gecos: "Konvoy User"
+    groups: [sudo]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCjsekrIv910Jal643vVdJXwVcpDkp4BfqacTuD2FCAoxjFAsE+xijznrfSq7G7VPjK0BP/VVy2lVPrrca1ylD+ltHk6Xt92/kZOEH2bGPbfaCeY9PdQaXZy+Ty2bLDejOOdFsPE4Ned15MuexlKxo9vVvPl4/GbJ24E8rDZ3JWIfyc/tFwYnqm0vNST10IwMawvc+kOyKXXrpnITXyQI1eOCo6VaCFcjJkhl5jxIzQrbHnjI1Wy74vidSkw4pJzOhW0f0OZFDkmVckm8lLXRO7yUjedo+FFF2yHqfjP5PNcdjq6f/hadlIpoAFeu7TWiJ3yBN4ww/OggAzNYZXzd6nih+HvfOZbwCcof/OgandStBWCEZA0RVwlOSIeqIcXt7bPlvAaQsGBabSOIQP/8ZtA068QKYx7VgEMRaZ4QY+FQRwnEhBfjfBIVuVnXwMCjXCgDBhPN1XI8z8tiW03CYMMjdZ64ZWOwjQpuD73uJfC3vVO9vLgj1GZSAJCIkTs40= nutanix@bastion"
+
+  - name: nutanix
+    gecos: "Nutanix User"
+    groups: [sudo]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+
+ssh_pwauth: true
+
+chpasswd:
+  expire: false
+  list: |
+    nutanix:nutanix/4u
+
+runcmd:
+  - systemctl enable --now ssh
