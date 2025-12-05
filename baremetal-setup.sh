@@ -332,7 +332,7 @@ nkp create cluster preprovisioned \
 # Apply the Cluster Manifest to create the cluster
 kubectl create -f ${CLUSTER_NAME}.yaml
 
-nkp describe cluster -c ${CLUSTER_NAME}
+watch nkp describe cluster -c ${CLUSTER_NAME}
 
 
 #Control Flow command to wait for Control Planes to come up
