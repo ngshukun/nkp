@@ -1,6 +1,6 @@
 #cloud-config
 preserve_hostname: false
-fqdn: nutanix
+fqdn: jumphost
 
 # Create the user and give sudo
 users:

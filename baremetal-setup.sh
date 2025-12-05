@@ -19,8 +19,7 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDG7+w3foxaDg9fLRQX2RIxZeHvmI/tbAy1owDYvDP3H9n0eS8oOd30MG2/zRCcx4HOz0bsA21f+Kl2FbyWW8R05iZEdYcG4vpzebHtBNIQVsrL4j5w04GoNJYB1yJgbsDma6bqxdruC6oKerFWjjqpqzlPuZSHtrVdvmlLHxoPpzfErO5j+4G2vRztk2iFMFOpNeDWvUvfjii9xFbY4OV1YC6Wck9BFI5gBOgIZCj5OpUjYRR3bSYpaSDvm9ZTkORTEZCIM1+ZlWi57xqwvNP7/9Zk1yP+xzA+5MkDFnECJ9C5a2f9HwPipGG1RB/8+LwojLXDf+bGt+n8VXswJcqav7feXA/UqS8gr3XA0qrfjKsJOWMRdHnzJVeHf+J2kv3zZB7Tjtty1wpj7Tf9xzmbaEpnxoSfDuj4LB+rWVm+5edxz0h2SWlwwp+f4pv/uiC3Svmc5dihuT5jS2zAv7LP7Hj6QEL8t78I4XDeFRyYQ7p9OSgHYpWQ5NQD8t485mU= nutanix@nutanix
-
+      - AAAAB3NzaC1yc2EAAAADAQABAAABgQCjsekrIv910Jal643vVdJXwVcpDkp4BfqacTuD2FCAoxjFAsE+xijznrfSq7G7VPjK0BP/VVy2lVPrrca1ylD+ltHk6Xt92/kZOEH2bGPbfaCeY9PdQaXZy+Ty2bLDejOOdFsPE4Ned15MuexlKxo9vVvPl4/GbJ24E8rDZ3JWIfyc/tFwYnqm0vNST10IwMawvc+kOyKXXrpnITXyQI1eOCo6VaCFcjJkhl5jxIzQrbHnjI1Wy74vidSkw4pJzOhW0f0OZFDkmVckm8lLXRO7yUjedo+FFF2yHqfjP5PNcdjq6f/hadlIpoAFeu7TWiJ3yBN4ww/OggAzNYZXzd6nih+HvfOZbwCcof/OgandStBWCEZA0RVwlOSIeqIcXt7bPlvAaQsGBabSOIQP/8ZtA068QKYx7VgEMRaZ4QY+FQRwnEhBfjfBIVuVnXwMCjXCgDBhPN1XI8z8tiW03CYMMjdZ64ZWOwjQpuD73uJfC3vVO9vLgj1GZSAJCIkTs40= nutanix@bastion
 ssh_pwauth: false   # disable password SSH login; key-only
 
 runcmd:
@@ -134,15 +133,15 @@ cd nkp-v2.16.0/kib
 ./konvoy-image create-package-bundle -os ubuntu-22.04
 
 #Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="xxx.yyy.zzz.51"
-export CONTROL_PLANE_2_ADDRESS="xxx.yyy.zzz.52"
-export CONTROL_PLANE_3_ADDRESS="xxx.yyy.zzz.53"
+export CONTROL_PLANE_1_ADDRESS="10.129.42.93"
+export CONTROL_PLANE_2_ADDRESS="10.129.42.126"
+export CONTROL_PLANE_3_ADDRESS="10.129.42.58"
 
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="xxx.yyy.zzz.54"
-export WORKER_2_ADDRESS="xxx.yyy.zzz.55"
-export WORKER_3_ADDRESS="xxx.yyy.zzz.56"
-export WORKER_4_ADDRESS="xxx.yyy.zzz.57"
+export WORKER_1_ADDRESS="10.129.42.142"
+export WORKER_2_ADDRESS="10.129.42.38"
+export WORKER_3_ADDRESS="10.129.42.120"
+export WORKER_4_ADDRESS="10.129.42.132"
 
 #Replace konvoy with the username you created on the Virtual Machines
 export SSH_USER="konvoy"
@@ -151,7 +150,7 @@ export SSH_USER="konvoy"
 export SSH_PRIVATE_KEY_FILE="/home/nutanix/.ssh/id_rsa"
 
 #Replace 1.31.4_ubuntu_22.04_x86_64.tar.gz with the name of the package bundle you downloaded within the /nkp-version/kib/artifacts directory earlier
-export OS_PACKAGES_BUNDLE=1.33.2_ubuntu_22.04_x86_64.tar.gz
+export OS_PACKAGES_BUNDLE=1.33.5_ubuntu_22.04_x86_64.tar.gz
 
 #Replace containerd-1.7.22-d2iq.1-ubuntu-22.04-x86_64.tar.gz with the name of the respective containerd bundle and OS type within the /nkp-version/kib/artifacts directory. 
 export CONTAINERD_BUNDLE=containerd-1.7.27-d2iq.1-ubuntu-22.04-x86_64.tar.gz
@@ -204,11 +203,11 @@ vi .env
 #Ensure that we’re using a registry FQDN, with the suffix to the repository that we’re going to be mirroring the images to.
 export REGISTRY_URL=https://registry.ntnxlab.local/mirror
 #Replace the Username with your actual username
-export REGISTRY_USERNAME=admin
+export REGISTRY_USERNAME=shukun
 #Replace the Password with your actual password
 export REGISTRY_PASSWORD=Harbor12345
 #Path to the CA Cert of the Registry, if it is an Internal CA.
-export REGISTRY_CA=/home/nutanix/certs/nsk-ca-chain.crt
+export REGISTRY_CA=/home/nutanix/certs/ca-chain.crt
 
 #Set NKP Cluster Name
 export CLUSTER_NAME=baremetal
@@ -223,12 +222,16 @@ export CLUSTER_VIP_ETH_INTERFACE="ens3"
 
 #Set Control Plane VMs information
 #Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="10.129.42.117"
+export CONTROL_PLANE_1_ADDRESS="10.129.42.93"
+export CONTROL_PLANE_2_ADDRESS="10.129.42.126"
+export CONTROL_PLANE_3_ADDRESS="10.129.42.58"
 
 #Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.137"
-export WORKER_2_ADDRESS="10.129.42.129"
+export WORKER_1_ADDRESS="10.129.42.142"
+export WORKER_2_ADDRESS="10.129.42.38"
+export WORKER_3_ADDRESS="10.129.42.120"
+export WORKER_4_ADDRESS="10.129.42.132"
 
 #Set SSH Information to Virtual Machines
 #Replace konvoy with the username you created on the Virtual Machines
