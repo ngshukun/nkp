@@ -133,15 +133,16 @@ cd nkp-v2.16.0/kib
 ./konvoy-image create-package-bundle -os ubuntu-22.04
 
 #Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="10.129.42.93"
-export CONTROL_PLANE_2_ADDRESS="10.129.42.126"
-export CONTROL_PLANE_3_ADDRESS="10.129.42.58"
+export CONTROL_PLANE_1_ADDRESS="10.129.42.160"
+export CONTROL_PLANE_2_ADDRESS="10.129.42.138"
+export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
 
+#Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.142"
-export WORKER_2_ADDRESS="10.129.42.38"
-export WORKER_3_ADDRESS="10.129.42.120"
-export WORKER_4_ADDRESS="10.129.42.132"
+export WORKER_1_ADDRESS="10.129.42.105"
+export WORKER_2_ADDRESS="10.129.42.157"
+export WORKER_3_ADDRESS="10.129.42.66"
+export WORKER_4_ADDRESS="10.129.42.103""
 
 #Replace konvoy with the username you created on the Virtual Machines
 export SSH_USER="konvoy"
@@ -222,16 +223,16 @@ export CLUSTER_VIP_ETH_INTERFACE="ens3"
 
 #Set Control Plane VMs information
 #Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="10.129.42.93"
-export CONTROL_PLANE_2_ADDRESS="10.129.42.126"
-export CONTROL_PLANE_3_ADDRESS="10.129.42.58"
+export CONTROL_PLANE_1_ADDRESS="10.129.42.160"
+export CONTROL_PLANE_2_ADDRESS="10.129.42.138"
+export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
 
 #Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.142"
-export WORKER_2_ADDRESS="10.129.42.38"
-export WORKER_3_ADDRESS="10.129.42.120"
-export WORKER_4_ADDRESS="10.129.42.132"
+export WORKER_1_ADDRESS="10.129.42.105"
+export WORKER_2_ADDRESS="10.129.42.157"
+export WORKER_3_ADDRESS="10.129.42.66"
+export WORKER_4_ADDRESS="10.129.42.103"
 
 #Set SSH Information to Virtual Machines
 #Replace konvoy with the username you created on the Virtual Machines
