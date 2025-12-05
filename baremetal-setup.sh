@@ -139,10 +139,10 @@ export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
 
 #Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.105"
+export WORKER_1_ADDRESS="10.129.42.157"
 export WORKER_2_ADDRESS="10.129.42.157"
 export WORKER_3_ADDRESS="10.129.42.66"
-export WORKER_4_ADDRESS="10.129.42.103""
+export WORKER_4_ADDRESS="10.129.42.79"
 
 #Replace konvoy with the username you created on the Virtual Machines
 export SSH_USER="konvoy"
@@ -232,7 +232,7 @@ export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
 export WORKER_1_ADDRESS="10.129.42.105"
 export WORKER_2_ADDRESS="10.129.42.157"
 export WORKER_3_ADDRESS="10.129.42.66"
-export WORKER_4_ADDRESS="10.129.42.103"
+export WORKER_4_ADDRESS="10.129.42.79"
 
 #Set SSH Information to Virtual Machines
 #Replace konvoy with the username you created on the Virtual Machines
