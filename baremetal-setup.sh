@@ -413,7 +413,7 @@ kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisio
 # Create CAPI components on the NKP Cluster.
 # if timeout occurred, check if the pvc are still bound to local provisioner
 # delete the pvc and recreate the capi-components
-nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf
+nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf #remember to switch to bgp routing
 
 # Move CAPI resources into actual cluster
 nkp move capi-resources --to-kubeconfig ${CLUSTER_NAME}.conf
