@@ -412,6 +412,9 @@ kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":
 
 # set ipipmode to Never and use vxlanMode to Always
 # check the setting of your networking
+# ipip run in layer 4, might not work in airgap
+# vxlan uses UDP4789, 
+# vxlan work like IPIP, just that it uses UDP, that y it will work.
 kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
 kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
 
