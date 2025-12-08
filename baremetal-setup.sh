@@ -198,6 +198,8 @@ EOF
 cd ~/nkp/nkp-v2.16.0/
 docker load -i konvoy-bootstrap-image-v2.16.0.tar
 cd ~/nkp-'version'
+# if required 
+#sudo iptables -A OUTPUT -o eth0 ! -d 10.129.42.0/24 -j REJECT
 nkp create bootstrap
 
 vi .env
