@@ -408,6 +408,12 @@ k --kubeconfig baremetal.conf apply -f pvc-test.yaml
 
 # Remove the localvolumeprovisioner as a default storage class
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
+
+# set ipipmode to Never and use vxlanMode to Always
+# check the setting of your networking
+kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
+kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
 
 
 # Create CAPI components on the NKP Cluster.
