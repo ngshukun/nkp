@@ -328,10 +328,10 @@ watch nkp describe cluster -c ${CLUSTER_NAME}
 kubectl wait --for=condition=ControlPlaneReady "clusters/${CLUSTER_NAME}" --timeout=20m
 
 #Get kubeconfig of the created cluster
-nkp get kubeconfig -c ${CLUSTER_NAME} > ~/${CLUSTER_NAME}.conf
+nkp get kubeconfig -c ${CLUSTER_NAME} > ./${CLUSTER_NAME}.conf
 
 #Control Flow command to check that all nodes, including worker nodes are online.
-kubectl --kubeconfig ~/${CLUSTER_NAME}.conf wait --for=condition=Ready nodes --all --timeout=30m
+kubectl --kubeconfig ./${CLUSTER_NAME}.conf wait --for=condition=Ready nodes --all --timeout=30m
 
 # install external-snapshotter from
 # https://github.com/kubernetes-csi/external-snapshotter
@@ -397,16 +397,15 @@ k --kubeconfig baremetal.conf apply -f pvc-test.yaml
 
 # Remove the localvolumeprovisioner as a default storage class
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
 
 # set ipipmode to Never and use vxlanMode to Always
 # check the setting of your networking
 # ipip run in layer 4, might not work in airgap
 # vxlan uses UDP4789, 
 # vxlan work like IPIP, just that it uses UDP, that y it will work.
-kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
+kubectl --kubeconfig ${CLUSTER_NAME}.conf get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
-
+kubectl delete pod -n calico-system -l k8s-app=calico-node # refresh all calico pods
 
 # Create CAPI components on the NKP Cluster.
 # if timeout occurred, check if the pvc are still bound to local provisioner
