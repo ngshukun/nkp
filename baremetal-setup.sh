@@ -405,7 +405,7 @@ kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":
 # vxlan uses UDP4789, 
 # vxlan work like IPIP, just that it uses UDP, that y it will work.
 kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
-kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
+kubectl --kubeconfig ${CLUSTER_NAME}.conf patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
 
 
 # Create CAPI components on the NKP Cluster.
