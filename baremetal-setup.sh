@@ -132,77 +132,11 @@ cd ~
 cd nkp-v2.16.0/kib
 ./konvoy-image create-package-bundle -os ubuntu-22.04
 
-#Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="10.129.42.160"
-export CONTROL_PLANE_2_ADDRESS="10.129.42.138"
-export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
-
-#Set Worker Node VMs Information
-#Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.105"
-export WORKER_2_ADDRESS="10.129.42.157"
-export WORKER_3_ADDRESS="10.129.42.66"
-export WORKER_4_ADDRESS="10.129.42.79"
-
-#Replace konvoy with the username you created on the Virtual Machines
-export SSH_USER="konvoy"
-
-#Replace with the path of your actual private key associated with the public key you used for the authorized keys.
-export SSH_PRIVATE_KEY_FILE="/home/nutanix/.ssh/id_rsa"
-
-#Replace 1.31.4_ubuntu_22.04_x86_64.tar.gz with the name of the package bundle you downloaded within the /nkp-version/kib/artifacts directory earlier
-export OS_PACKAGES_BUNDLE=1.33.5_ubuntu_22.04_x86_64.tar.gz
-
-#Replace containerd-1.7.22-d2iq.1-ubuntu-22.04-x86_64.tar.gz with the name of the respective containerd bundle and OS type within the /nkp-version/kib/artifacts directory. 
-export CONTAINERD_BUNDLE=containerd-1.7.27-d2iq.1-ubuntu-22.04-x86_64.tar.gz
-
-#Ensure that you’re in the /nkp-'version'/kib/ directory
-#replace 'version' with the actual version of NKP
-cd ~/nkp-'version'/kib/
-
-# Prepare an Inventory of VMs to push the bundles to.
-cat <<EOF > inventory.yaml
-all:
-  vars:
-    ansible_user: $SSH_USER
-    ansible_port: 22
-    ansible_ssh_private_key_file: $SSH_PRIVATE_KEY_FILE
-  hosts:
-    $CONTROL_PLANE_1_ADDRESS:
-      ansible_host: $CONTROL_PLANE_1_ADDRESS
-    $CONTROL_PLANE_2_ADDRESS:
-      ansible_host: $CONTROL_PLANE_2_ADDRESS
-    $CONTROL_PLANE_3_ADDRESS:
-      ansible_host: $CONTROL_PLANE_3_ADDRESS
-    $WORKER_1_ADDRESS:
-      ansible_host: $WORKER_1_ADDRESS
-    $WORKER_2_ADDRESS:
-      ansible_host: $WORKER_2_ADDRESS
-    $WORKER_3_ADDRESS:
-      ansible_host: $WORKER_3_ADDRESS
-    $WORKER_4_ADDRESS:
-      ansible_host: $WORKER_4_ADDRESS
-EOF
-
-# push images to the vm
-# ensure the inventory.yaml are located on ./konvoy-image
-./konvoy-image upload artifacts \
-              --container-images-dir=./artifacts/images/ \
-              --os-packages-bundle=./artifacts/$OS_PACKAGES_BUNDLE \
-              --containerd-bundle=artifacts/$CONTAINERD_BUNDLE \
-              --pip-packages-bundle=./artifacts/pip-packages.tar.gz
-
-
-#Ensure that you’re in the /nkp-'version' directory
-#replace 'version' with the actual version of NKP
-cd ~/nkp/nkp-v2.16.0/
-docker load -i konvoy-bootstrap-image-v2.16.0.tar
-cd ~/nkp-'version'
-# if required 
-#sudo iptables -A OUTPUT -o eth0 ! -d 10.129.42.0/24 -j REJECT
-nkp create bootstrap
-
 vi .env
+# input OS_PACKAGES_BUNDLE under .env
+export OS_PACKAGES_BUNDLE=1.33.5_ubuntu_22.04_x86_64.tar.gz
+# input containerd under .env
+export CONTAINERD_BUNDLE=containerd-1.7.27-d2iq.1-ubuntu-22.04-x86_64.tar.gz
 #Ensure that we’re using a registry FQDN, with the suffix to the repository that we’re going to be mirroring the images to.
 export REGISTRY_URL=https://10.129.42.41/mirror
 #Replace the Username with your actual username
@@ -246,6 +180,56 @@ export SSH_PRIVATE_KEY_FILE="/home/nutanix/.ssh/id_rsa"
 
 #Dont change this line
 export SSH_PRIVATE_KEY_SECRET_NAME=${CLUSTER_NAME}-ssh-key
+
+#Ensure that you’re in the /nkp-'version'/kib/ directory
+#replace 'version' with the actual version of NKP
+cd ~/nkp-'version'/kib/
+
+# Prepare an Inventory of VMs to push the bundles to.
+cat <<EOF > inventory.yaml
+all:
+  vars:
+    ansible_user: $SSH_USER
+    ansible_port: 22
+    ansible_ssh_private_key_file: $SSH_PRIVATE_KEY_FILE
+  hosts:
+    $CONTROL_PLANE_1_ADDRESS:
+      ansible_host: $CONTROL_PLANE_1_ADDRESS
+    $CONTROL_PLANE_2_ADDRESS:
+      ansible_host: $CONTROL_PLANE_2_ADDRESS
+    $CONTROL_PLANE_3_ADDRESS:
+      ansible_host: $CONTROL_PLANE_3_ADDRESS
+    $WORKER_1_ADDRESS:
+      ansible_host: $WORKER_1_ADDRESS
+    $WORKER_2_ADDRESS:
+      ansible_host: $WORKER_2_ADDRESS
+    $WORKER_3_ADDRESS:
+      ansible_host: $WORKER_3_ADDRESS
+    $WORKER_4_ADDRESS:
+      ansible_host: $WORKER_4_ADDRESS
+EOF
+
+# push images to the vm
+# ensure the inventory.yaml are located on ./konvoy-image
+./konvoy-image upload artifacts \
+              --container-images-dir=./artifacts/images/ \
+              --os-packages-bundle=./artifacts/$OS_PACKAGES_BUNDLE \
+              --containerd-bundle=artifacts/$CONTAINERD_BUNDLE \
+              --pip-packages-bundle=./artifacts/pip-packages.tar.gz
+
+
+#Ensure that you’re in the /nkp-'version' directory
+#replace 'version' with the actual version of NKP
+cd ~/nkp/nkp-v2.16.0/
+docker load -i konvoy-bootstrap-image-v2.16.0.tar
+cd ~/nkp-'version'
+
+
+# if required 
+#sudo iptables -A OUTPUT -o eth0 ! -d 10.129.42.0/24 -j REJECT
+nkp create bootstrap
+
+
 
 # CREATE LIST OF VM INVENTORY FOR NKP TO INSTALL NKP ON
 
