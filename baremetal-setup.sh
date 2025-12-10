@@ -228,7 +228,7 @@ cd ~/nkp-'version'
 # if required to block internet
 # sudo iptables -A OUTPUT -o eth0 ! -d 10.129.42.0/24 -j REJECT
 # to unblock
-# sudo iptables -D OUTPUT -o eth0 ! -d 10.129.42.0/24 -j REJECT
+# sudo iptables -D OUTPUT -o ens3 ! -d 10.129.42.0/24 -j REJECT
 
 nkp create bootstrap
 
@@ -339,10 +339,10 @@ tar zxvf v8.x.x.tar.gz
 
 #Install the snapshot-controller CRDs and Controller 
 #CRDs
-kubectl --kubeconfig ~/${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/client/config/crd | kubectl --kubeconfig ~/${CLUSTER_NAME}.conf apply -f -
+kubectl --kubeconfig ./${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/client/config/crd | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f -
 
 #Snapshot Controller
-kubectl --kubeconfig ~/${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ~/${CLUSTER_NAME}.conf apply -f 
+kubectl --kubeconfig ./${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f 
 
 # install csi
 # download csi from 
@@ -405,7 +405,7 @@ kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisio
 # vxlan work like IPIP, just that it uses UDP, that y it will work.
 kubectl --kubeconfig ${CLUSTER_NAME}.conf get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
-kubectl delete pod -n calico-system -l k8s-app=calico-node # refresh all calico pods
+kubectl --kubeconfig ${CLUSTER_NAME}.conf delete pod -n calico-system -l k8s-app=calico-node # refresh all calico pods
 
 # Create CAPI components on the NKP Cluster.
 # if timeout occurred, check if the pvc are still bound to local provisioner
@@ -414,6 +414,7 @@ nkp create capi-components --kubeconfig ${CLUSTER_NAME}.conf #remember to switch
 
 # Move CAPI resources into actual cluster
 nkp move capi-resources --to-kubeconfig ${CLUSTER_NAME}.conf
+
 
 # verifying move is successfull
 kubectl --kubeconfig=${CLUSTER_NAME}.conf get nodes
@@ -439,7 +440,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 10.129.42.21-10.129.42.21 #Replace with your actual MetalLB IP Range. We need minimally 1 address that is not part of a DHCP Pool
+  - 10.129.42.26-10.129.42.26 #Replace with your actual MetalLB IP Range. We need minimally 1 address that is not part of a DHCP Pool
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
