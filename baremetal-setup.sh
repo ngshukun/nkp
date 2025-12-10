@@ -435,7 +435,7 @@ kubectl --kubeconfig=${CLUSTER_NAME}.conf get clusters
 nkp delete bootstrap
 
 # set kubeconfig to actual mgmt cluster
-export KUBECONFIG=~/${CLUSTER_NAME}.conf 
+export KUBECONFIG=./${CLUSTER_NAME}.conf 
 
 k get no
 
