@@ -132,6 +132,13 @@ cd ~
 cd nkp-v2.16.0/kib
 ./konvoy-image create-package-bundle -os ubuntu-22.04
 
+#for lab use to apply on all the master and worker node
+sudo iptables -A OUTPUT -d 10.0.0.0/8 -j ACCEPT
+sudo iptables -A OUTPUT -d 172.16.0.0/12 -j ACCEPT
+sudo iptables -A OUTPUT -d 192.168.0.0/16 -j ACCEPT
+sudo iptables -A OUTPUT -d 127.0.0.1/32 -j ACCEPT
+sudo iptables -A OUTPUT -j REJECT
+
 vi .env
 # input OS_PACKAGES_BUNDLE under .env
 export OS_PACKAGES_BUNDLE=1.33.5_ubuntu_22.04_x86_64.tar.gz
