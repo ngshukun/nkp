@@ -412,6 +412,7 @@ kubectl --kubeconfig ${CLUSTER_NAME}.conf get ippools.crd.projectcalico.org defa
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
 kubectl --kubeconfig ${CLUSTER_NAME}.conf delete pod -n calico-system -l k8s-app=calico-node # refresh all calico pods
 watch kubectl --kubeconfig ${CLUSTER_NAME}.conf get pod -n calico-system -l k8s-app=calico-node # observe all calico pods running
+
 # Create CAPI components on the NKP Cluster.
 # if timeout occurred, check if the pvc are still bound to local provisioner
 # delete the pvc and recreate the capi-components
@@ -460,7 +461,7 @@ spec:
 #Generate NKP Kommander installation components
 #replace 'version' with the actual version of NKP
 nkp install kommander --init --airgapped \
---kommander-applications-repository application-repositories/kommander-applications-v2.16.0.tar.gz \
+--kommander-applications-repository application-repositories/kommander-applications-v2.16.1.tar.gz \
 > kommander.yaml
 
 # in kommander, below are the must have for NKP conponent
@@ -477,5 +478,5 @@ nkp install kommander --init --airgapped \
 
 # install kommander
 nkp install kommander --airgapped \
---kommander-applications-repository application-repositories/kommander-applications-v2.16.0.tar.gz \
+--kommander-applications-repository application-repositories/kommander-applications-v2.16.1.tar.gz \
 --installer-config kommander.yaml
