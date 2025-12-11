@@ -347,7 +347,7 @@ tar zxvf v8.x.x.tar.gz
 kubectl --kubeconfig ./${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/client/config/crd | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f -
 
 #Snapshot Controller
-kubectl --kubeconfig ./${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f 
+kubectl --kubeconfig ./${CLUSTER_NAME}.conf kustomize external-snapshotter-8.x.x/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f - 
 
 # install csi
 # download csi from 
@@ -480,3 +480,42 @@ nkp install kommander --init --airgapped \
 nkp install kommander --airgapped \
 --kommander-applications-repository application-repositories/kommander-applications-v2.16.1.tar.gz \
 --installer-config kommander.yaml
+
+
+# to include ingress cert for nkp
+# in kommander.yaml
+apiVersion: config.kommander.mesosphere.io/v1alpha1
+kind: Installation
+apps:
+  dex:
+    enabled: true
+  dex-k8s-authenticator:
+    enabled: true
+  gatekeeper:
+    enabled: true
+  git-operator:
+    enabled: true
+  kommander:
+    enabled: true
+  kommander-ui:
+    enabled: true
+  kubefed:
+    enabled: true
+  reloader:
+    enabled: true
+  traefik:
+    enabled: true
+    values: |
+      service:
+        annotations:
+          service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+  traefik-forward-auth-mgmt:
+    enabled: true
+ageEncryptionSecretName: sops-age
+clusterHostname: "nkp.ntnxlab.local"
+airgapped:
+  enabled: true
+ingressCertificate:
+  certificate: /home/nutanix/certs/server.crt
+  private_key: /home/nutanix/certs/server.key
+  ca: /home/nutanix/certs/ca-chain.crt
