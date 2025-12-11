@@ -411,7 +411,7 @@ kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisio
 kubectl --kubeconfig ${CLUSTER_NAME}.conf get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
 kubectl --kubeconfig ${CLUSTER_NAME}.conf patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
 kubectl --kubeconfig ${CLUSTER_NAME}.conf delete pod -n calico-system -l k8s-app=calico-node # refresh all calico pods
-
+watch kubectl --kubeconfig ${CLUSTER_NAME}.conf get pod -n calico-system -l k8s-app=calico-node # observe all calico pods running
 # Create CAPI components on the NKP Cluster.
 # if timeout occurred, check if the pvc are still bound to local provisioner
 # delete the pvc and recreate the capi-components
