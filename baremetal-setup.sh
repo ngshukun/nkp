@@ -224,6 +224,9 @@ EOF
               --containerd-bundle=artifacts/$CONTAINERD_BUNDLE \
               --pip-packages-bundle=./artifacts/pip-packages.tar.gz
 
+# if you are using CIS Harden image, perform the following command
+# to allow the master and work node
+chmod -R 777 /opt
 
 #Ensure that you’re in the /nkp-'version' directory
 #replace 'version' with the actual version of NKP
