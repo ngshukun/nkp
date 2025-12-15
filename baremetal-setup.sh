@@ -145,7 +145,7 @@ export OS_PACKAGES_BUNDLE=1.33.5_ubuntu_22.04_x86_64.tar.gz
 # input containerd under .env
 export CONTAINERD_BUNDLE=containerd-1.7.27-d2iq.1-ubuntu-22.04-x86_64.tar.gz
 #Ensure that we’re using a registry FQDN, with the suffix to the repository that we’re going to be mirroring the images to.
-export REGISTRY_URL=https://10.129.42.41/mirror
+export REGISTRY_URL=https://registry.ntnxlab.local/mirror
 #Replace the Username with your actual username
 export REGISTRY_USERNAME=shukun
 #Replace the Password with your actual password
@@ -158,7 +158,7 @@ export CLUSTER_NAME=baremetal
 
 #Set NKP KubeAPI Server VIP
 #Replace with the desired IP Address for the KubeAPI Server. Make sure it’s on the same subnet as your Virtual Machines.
-export CLUSTER_VIP="10.129.42.20"
+export CLUSTER_VIP="10.129.42.27"
 
 #Set VM Ethernet Interface Name
 #Replace with the actual interface name in the control plane VMs. find it by using `ip address` and looking for the interface with the VM’s IP Address
@@ -166,16 +166,16 @@ export CLUSTER_VIP_ETH_INTERFACE="ens3"
 
 #Set Control Plane VMs information
 #Replace with the IP Addresses of your Control Plane VMs
-export CONTROL_PLANE_1_ADDRESS="10.129.42.160"
-export CONTROL_PLANE_2_ADDRESS="10.129.42.138"
-export CONTROL_PLANE_3_ADDRESS="10.129.42.62"
+export CONTROL_PLANE_1_ADDRESS="10.129.42.151"
+export CONTROL_PLANE_2_ADDRESS="10.129.42.126"
+export CONTROL_PLANE_3_ADDRESS="10.129.42.120"
 
 #Set Worker Node VMs Information
 #Replace with the IP Addresses of your Non-DGX Worker Node Pool VMs
-export WORKER_1_ADDRESS="10.129.42.105"
-export WORKER_2_ADDRESS="10.129.42.157"
-export WORKER_3_ADDRESS="10.129.42.66"
-export WORKER_4_ADDRESS="10.129.42.79"
+export WORKER_1_ADDRESS="10.129.42.121"
+export WORKER_2_ADDRESS="10.129.42.91"
+export WORKER_3_ADDRESS="10.129.42.142"
+export WORKER_4_ADDRESS="10.129.42.46"
 
 #Set SSH Information to Virtual Machines
 #Replace konvoy with the username you created on the Virtual Machines
@@ -226,7 +226,7 @@ EOF
 
 # if you are using CIS Harden image, perform the following command
 # to allow the master and work node
-chmod -R 777 /opt
+sudo chmod -R 777 /opt
 
 #Ensure that you’re in the /nkp-'version' directory
 #replace 'version' with the actual version of NKP
