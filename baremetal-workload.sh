@@ -56,7 +56,7 @@ kind: PreprovisionedInventory
 metadata:
   name: $CLUSTER_NAME-control-plane
   #ensure namespace is correct if we are attaching to a workspace
-  namespace: default
+  namespace: dev-workload
   labels:
     cluster.x-k8s.io/cluster-name: $CLUSTER_NAME
     clusterctl.cluster.x-k8s.io/move: ""
@@ -85,7 +85,7 @@ kind: PreprovisionedInventory
 metadata:
   name: $CLUSTER_NAME-md-0
   #ensure namespace is correct if we are attaching to a workspace
-  namespace: default
+  namespace: dev-workload
   labels:
     cluster.x-k8s.io/cluster-name: $CLUSTER_NAME
     clusterctl.cluster.x-k8s.io/move: ""
@@ -104,3 +104,12 @@ spec:
       namespace: default
 EOF
 
+nkp create cluster preprovisioned --cluster-name ${CLUSTER_NAME} \
+--control-plane-endpoint-host ${CLUSTER_VIP} \
+--control-plane-endpoint-port '6443' \
+--pre-provisioned-inventory-file /home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml \
+--ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
+--registry-mirror-url=${REGISTRY_URL} \
+--registry-mirror-cacert=${REGISTRY_CA} \
+--registry-mirror-username=${REGISTRY_USERNAME} \
+--registry-mirror-password=${REGISTRY_PASSWORD}
