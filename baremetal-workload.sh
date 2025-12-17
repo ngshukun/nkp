@@ -110,10 +110,10 @@ EOF
 nkp create cluster preprovisioned \
 --cluster-name ${CLUSTER_NAME} \
 --control-plane-endpoint-host ${CLUSTER_VIP} \
---pre-provisioned-inventory-file /home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml \
+--pre-provisioned-inventory-file="/home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml" \
 --ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
 --registry-mirror-url=${REGISTRY_URL} \
 --registry-mirror-cacert=${REGISTRY_CA} \
 --registry-mirror-username=${REGISTRY_USERNAME} \
---workspace=${WORKSPACE_NAMESPACE} \
+--namespace=${WORKSPACE_NAMESPACE} \
 --registry-mirror-password=${REGISTRY_PASSWORD}
