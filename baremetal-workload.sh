@@ -15,6 +15,9 @@ export REGISTRY_CA=/home/nutanix/certs/ca-chain.crt
 #Set NKP Cluster Name
 export CLUSTER_NAME=workload-dev
 
+# set NKP workspace name
+export WORKSPACE_NAMESPACE=workload-dev
+
 #Set NKP KubeAPI Server VIP
 #Replace with the desired IP Address for the KubeAPI Server. Make sure it’s on the same subnet as your Virtual Machines.
 export CLUSTER_VIP="10.129.42.27"
@@ -104,12 +107,13 @@ spec:
       namespace: default
 EOF
 
-nkp create cluster preprovisioned --cluster-name ${CLUSTER_NAME} \
+nkp create cluster preprovisioned \
+--cluster-name ${CLUSTER_NAME} \
 --control-plane-endpoint-host ${CLUSTER_VIP} \
---control-plane-endpoint-port '6443' \
 --pre-provisioned-inventory-file /home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml \
 --ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
 --registry-mirror-url=${REGISTRY_URL} \
 --registry-mirror-cacert=${REGISTRY_CA} \
 --registry-mirror-username=${REGISTRY_USERNAME} \
+--workspace=${WORKSPACE_NAMESPACE} \
 --registry-mirror-password=${REGISTRY_PASSWORD}
