@@ -81,7 +81,7 @@ spec:
       # namespace as this inventory object.
       name: $SSH_PRIVATE_KEY_SECRET_NAME
       #ensure namespace is correct if we are attaching to a workspace
-      namespace: default
+      namespace: dev-workload
 ---
 apiVersion: infrastructure.cluster.konvoy.d2iq.io/v1alpha1
 kind: PreprovisionedInventory
