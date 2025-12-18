@@ -59,7 +59,7 @@ kind: PreprovisionedInventory
 metadata:
   name: $CLUSTER_NAME-control-plane
   #ensure namespace is correct if we are attaching to a workspace
-  namespace: dev-workload
+  namespace: dev-workload-t9vjv-gchc8
   labels:
     cluster.x-k8s.io/cluster-name: $CLUSTER_NAME
     clusterctl.cluster.x-k8s.io/move: ""
@@ -81,14 +81,14 @@ spec:
       # namespace as this inventory object.
       name: $SSH_PRIVATE_KEY_SECRET_NAME
       #ensure namespace is correct if we are attaching to a workspace
-      namespace: dev-workload
+      namespace: dev-workload-t9vjv-gchc8
 ---
 apiVersion: infrastructure.cluster.konvoy.d2iq.io/v1alpha1
 kind: PreprovisionedInventory
 metadata:
   name: $CLUSTER_NAME-md-0
   #ensure namespace is correct if we are attaching to a workspace
-  namespace: dev-workload
+  namespace: dev-workload-t9vjv-gchc8
   labels:
     cluster.x-k8s.io/cluster-name: $CLUSTER_NAME
     clusterctl.cluster.x-k8s.io/move: ""
