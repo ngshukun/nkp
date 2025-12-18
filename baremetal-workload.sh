@@ -107,13 +107,20 @@ spec:
       namespace: default
 EOF
 
+
 nkp create cluster preprovisioned \
---cluster-name ${CLUSTER_NAME} \
---control-plane-endpoint-host ${CLUSTER_VIP} \
---pre-provisioned-inventory-file="/home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml" \
---ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
---registry-mirror-url=${REGISTRY_URL} \
---registry-mirror-cacert=${REGISTRY_CA} \
---registry-mirror-username=${REGISTRY_USERNAME} \
---namespace=${WORKSPACE_NAMESPACE} \
---registry-mirror-password=${REGISTRY_PASSWORD}
+  --cluster-name ${CLUSTER_NAME} \
+  --control-plane-endpoint-host ${CLUSTER_VIP} \
+  --virtual-ip-interface ${CLUSTER_VIP_ETH_INTERFACE} \
+  --pre-provisioned-inventory-file /home/nutanix/nkp-v2.16.1/preprovisioned_inventory.yaml \
+  --ssh-private-key-file=${SSH_PRIVATE_KEY_FILE} \
+  --registry-mirror-url=${REGISTRY_URL} \
+  --registry-mirror-username=${REGISTRY_USERNAME} \
+  --registry-mirror-password=${REGISTRY_PASSWORD} \
+  --registry-mirror-cacert=${REGISTRY_CA} \
+  --worker-replicas=4 \
+  --control-plane-replicas=3 \
+  --namespace=${WORKSPACE_NAMESPACE} \
+  --dry-run \
+  --output=yaml \
+  > ${CLUSTER_NAME}.yaml
