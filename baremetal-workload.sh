@@ -1,7 +1,44 @@
 # If you have an existing Workspace name, find the name using the command
 k get ws -A
 export export WORKSPACE_NAMESPACE=dev-workload-t9vjv-gchc8
+# prepare wworkload cluster nodes
+cd ~/nkp-'version'/kib/
 
+# Prepare an Inventory of VMs to push the bundles to.
+cat <<EOF > inventory.yaml
+all:
+  vars:
+    ansible_user: $SSH_USER
+    ansible_port: 22
+    ansible_ssh_private_key_file: $SSH_PRIVATE_KEY_FILE
+  hosts:
+    $CONTROL_PLANE_1_ADDRESS:
+      ansible_host: $CONTROL_PLANE_1_ADDRESS
+    $CONTROL_PLANE_2_ADDRESS:
+      ansible_host: $CONTROL_PLANE_2_ADDRESS
+    $CONTROL_PLANE_3_ADDRESS:
+      ansible_host: $CONTROL_PLANE_3_ADDRESS
+    $WORKER_1_ADDRESS:
+      ansible_host: $WORKER_1_ADDRESS
+    $WORKER_2_ADDRESS:
+      ansible_host: $WORKER_2_ADDRESS
+    $WORKER_3_ADDRESS:
+      ansible_host: $WORKER_3_ADDRESS
+    $WORKER_4_ADDRESS:
+      ansible_host: $WORKER_4_ADDRESS
+EOF
+
+# push images to the vm
+# ensure the inventory.yaml are located on ./konvoy-image
+./konvoy-image upload artifacts \
+              --container-images-dir=./artifacts/images/ \
+              --os-packages-bundle=./artifacts/$OS_PACKAGES_BUNDLE \
+              --containerd-bundle=artifacts/$CONTAINERD_BUNDLE \
+              --pip-packages-bundle=./artifacts/pip-packages.tar.gz
+
+# if you are using CIS Harden image, perform the following command
+# to allow the master and work node
+sudo chmod -R 777 /opt
 
 # vi .env
 # input OS_PACKAGES_BUNDLE under .env
