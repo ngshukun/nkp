@@ -132,11 +132,18 @@ spec:
               port: 3306
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
           readinessProbe:
             exec:
-              command: ["sh","-c","mysqladmin ping -h 127.0.0.1 -u$MYSQL_USER -p$MYSQL_PASSWORD"]
-            initialDelaySeconds: 20
+              command:
+                - sh
+                - -c
+                - 'mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"'
+            initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 12
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
@@ -204,13 +211,13 @@ spec:
           ports:
             - name: http
               containerPort: 80
-          # Give WP time to finish first-run before probes start judging
           startupProbe:
             httpGet:
               path: /wp-admin/install.php
               port: 80
             failureThreshold: 30
             periodSeconds: 10
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /wp-admin/install.php
@@ -256,22 +263,21 @@ spec:
 # -----------------------------------------
 # Ingress (Traefik on NKP / Kommander)
 # -----------------------------------------
-# 2) Replace your Ingress with this (HTTP + HTTPS)
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: wordpress
   namespace: wordpress
   annotations:
-    kubernetes.io/ingress.class: kommander-traefik
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
   ingressClassName: kommander-traefik
   tls:
-    - hosts: ["blog.ntnxlab.local"]  # based on the secret you create in on row 1
+    - hosts:
+        - blog.ntnxlab.local
       secretName: blog-tls
   rules:
-    - host: blog.ntnxlab.local       # based on the secret you create in row 1
+    - host: blog.ntnxlab.local
       http:
         paths:
           - path: /
@@ -281,3 +287,4 @@ spec:
                 name: wordpress
                 port:
                   number: 80
+
