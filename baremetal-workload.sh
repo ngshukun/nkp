@@ -167,4 +167,8 @@ nkp create cluster preprovisioned \
   --output=yaml \
   > ${CLUSTER_NAME}.yaml
 
+
+# Apply the Cluster Manifest to create the cluster
+kubectl create -f ${CLUSTER_NAME}.yaml
+
 # to monitor the cluster creation, you can monitor from k9s

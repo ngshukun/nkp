@@ -188,7 +188,7 @@ spec:
         fsGroup: 33   # ensure PVC is writable by www-data
       containers:
         - name: wordpress
-          image: registry.ntnxlab.local/applications/wordpress:6.6-apache
+          image: registry.ntnxlab.local/applications/wordpress:6.6.2-php
           imagePullPolicy: IfNotPresent
           env:
             - name: WORDPRESS_DB_HOST
