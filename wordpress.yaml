@@ -3,7 +3,10 @@ openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
   -subj "/CN=blog.ntnxlab.local" \    # give your browser a name
   -keyout blog.key -out blog.crt
 
-kubectl -n default create secret tls blog-tls \
+  
+k create ns wordpress
+
+kubectl -n wordpress create secret tls blog-tls \
   --key blog.key --cert blog.crt
 
 # vi wordpress.yaml
