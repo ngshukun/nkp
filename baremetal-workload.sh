@@ -166,3 +166,5 @@ nkp create cluster preprovisioned \
   --dry-run \
   --output=yaml \
   > ${CLUSTER_NAME}.yaml
+
+# to monitor the cluster creation, you can monitor from k9s
