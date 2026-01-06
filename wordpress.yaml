@@ -1,7 +1,37 @@
 # 1) Self-signed cert for blog.ntnxlab.local
-openssl req -x509 -nodes -days 825 -newkey rsa:2048 \
-  -subj "/CN=blog.ntnxlab.local" \    # give your browser a name
-  -keyout blog.key -out blog.crt
+vi blog.conf
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+req_extensions = req_ext
+
+[ dn ]
+C = SG
+O = NutanixLab
+CN = blog.ntnxlab.local
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = blog.ntnxlab.local
+
+openssl genrsa -out blog.key 2048
+
+openssl req -new -key blog.key -out blog.csr -config blog.cnf
+
+openssl x509 -req \
+  -in blog.csr \
+  -CA ica.crt \
+  -CAkey ica.key \
+  -CAcreateserial \
+  -out blog.crt \
+  -days 825 \
+  -sha256 \
+  -extfile blog.cnf \
+  -extensions req_ext
 
   
 k create ns wordpress
