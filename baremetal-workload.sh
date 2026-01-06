@@ -172,3 +172,105 @@ nkp create cluster preprovisioned \
 kubectl create -f ${CLUSTER_NAME}.yaml
 
 # to monitor the cluster creation, you can monitor from k9s
+
+export KUBECONFIG=baremetal.conf:workload01.conf 
+k config use-context workload01-admin@workload01
+
+#check if all pods and nodes are working properly
+k get nodes -owide
+k get po -A
+
+#Install the snapshot-controller CRDs and Controller 
+#CRDs
+kubectl kustomize external-snapshotter-8.x.x/client/config/crd | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f -
+
+#Snapshot Controller
+kubectl kustomize external-snapshotter-8.x.x/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f - 
+
+# install csi
+# download csi from 
+# https://github.com/nutanix/helm-releases/releases/download/nutanix-csi-storage-3.3.8/nutanix-csi-storage-3.3.8.tgz
+tar -zxvf nutanix-csi-storage-3.3.8.tgz
+helm install nutanix-csi \
+./nutanix-csi-storage \
+--create-namespace \
+--set kubernetesClusterDeploymentType=bare-metal \
+--set createSecret=false \
+--set prismCentralEndPoint="10.129.42.11" \
+--set pcUsername="shukun" \
+--set pcPassword="P@ssw0rd"
+
+
+#Create a Nutanix Volumes CSI Storage Class
+vi storage-storage.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: nutanix-volume
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+parameters:
+   prismElementRef: 000622c1-636a-e6fb-0000-000000027af9 #PrismElement uuid. SSH into PE and use "ncli cluster info" to get the uuid
+   csi.storage.k8s.io/fstype: ext4
+   storageContainer: SelfServiceContainer #Change this if you want to use another storage container
+   storageType: NutanixVolumes
+provisioner: csi.nutanix.com
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+
+k apply -f storage-class.yaml
+
+# Remove the localvolumeprovisioner as a default storage class
+kubectl --kubeconfig ${CLUSTER_NAME}.conf patch storageclass localvolumeprovisioner -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+
+
+# test if storageclass works
+vi pvc-test.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-rwo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nutanix-volume
+  resources:
+    requests:
+      storage: 1Gi
+
+k apply -f pvc-test.yaml
+
+
+
+# setup metallb
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.129.42.28-10.129.42.28 #Replace with your actual MetalLB IP Range. We need minimally 1 address that is not part of a DHCP Pool
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - default
+
+
+# set ipipmode to Never and use vxlanMode to Always
+# check the setting of your networking
+# ipip run in layer 4, might not work in airgap
+# vxlan uses UDP4789, 
+# vxlan work like IPIP, just that it uses UDP, that y it will work.
+kubectl get ippools.crd.projectcalico.org default-ipv4-ippool -o yaml
+kubectl patch ippool default-ipv4-ippool   --type=merge -p '{"spec":{"ipipMode":"Never","vxlanMode":"Always"}}'
+kubectl delete pod -n calico-system -l k8s-app=calico-node # refresh all calico pods
+watch kubectl get pod -n calico-system -l k8s-app=calico-node # observe all calico pods running
+
+
