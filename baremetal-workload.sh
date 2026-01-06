@@ -1,3 +1,8 @@
+# If you have an existing Workspace name, find the name using the command
+k get ws -A
+export export WORKSPACE_NAMESPACE=dev-workload-t9vjv-gchc8
+
+
 # vi .env
 # input OS_PACKAGES_BUNDLE under .env
 export OS_PACKAGES_BUNDLE=1.33.5_ubuntu_22.04_x86_64.tar.gz
@@ -104,7 +109,7 @@ spec:
     privateKeyRef:
       name: $SSH_PRIVATE_KEY_SECRET_NAME
       #ensure namespace is correct if we are attaching to a workspace
-      namespace: default
+      namespace: dev-workload-t9vjv-gchc8
 EOF
 
 
