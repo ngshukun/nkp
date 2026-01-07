@@ -174,12 +174,15 @@ kubectl create -f ${CLUSTER_NAME}.yaml
 # monitor the cluster creation, you can monitor from k9s too
 watch nkp describe cluster -n dev-workload -c ${CLUSTER_NAME}
 
-export KUBECONFIG=baremetal.conf:workload01.conf 
-k config use-context workload01-admin@workload01
+
 
 #check if all pods and nodes are working properly
+kubectl wait -n dev-workload --for=condition=ControlPlaneReady "clusters/${CLUSTER_NAME}" --timeout=30m
 k get nodes -owide
 k get po -A
+
+export KUBECONFIG=baremetal.conf:workload01.conf 
+k config use-context workload01-admin@workload01
 
 #Install the snapshot-controller CRDs and Controller 
 #CRDs
