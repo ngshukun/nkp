@@ -171,7 +171,8 @@ nkp create cluster preprovisioned \
 # Apply the Cluster Manifest to create the cluster
 kubectl create -f ${CLUSTER_NAME}.yaml
 
-# to monitor the cluster creation, you can monitor from k9s
+# monitor the cluster creation, you can monitor from k9s too
+watch nkp describe cluster -n dev-workload -c ${CLUSTER_NAME}
 
 export KUBECONFIG=baremetal.conf:workload01.conf 
 k config use-context workload01-admin@workload01
