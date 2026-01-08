@@ -186,10 +186,10 @@ k config use-context workload01-admin@workload01
 
 #Install the snapshot-controller CRDs and Controller 
 #CRDs
-kubectl kustomize external-snapshotter-8.x.x/client/config/crd | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f -
+kubectl kustomize external-snapshotter-8.4.0/client/config/crd | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f -
 
 #Snapshot Controller
-kubectl kustomize external-snapshotter-8.x.x/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f - 
+kubectl kustomize external-snapshotter-8.4.0/deploy/kubernetes/snapshot-controller/ | kubectl --kubeconfig ./${CLUSTER_NAME}.conf apply -f - 
 
 # install csi
 # download csi from 
