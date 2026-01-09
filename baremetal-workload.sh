@@ -278,3 +278,12 @@ kubectl delete pod -n calico-system -l k8s-app=calico-node # refresh all calico 
 watch kubectl get pod -n calico-system -l k8s-app=calico-node # observe all calico pods running
 
 
+# load ingress cert
+# management cluster context
+export KUBECONFIG=<management_cluster_kubeconfig>.conf
+k get kommandercluster -A
+kubectl create secret generic -n dev-workload workload01-cluster-secret \
+  --from-file=ca.crt="/home/nutanix/certs/ca-chain.crt" \
+  --from-file=tls.crt="/home/nutanix/certs/workload.ntnxlab.local.crt" \
+  --from-file=tls.key="/home/nutanix/certs/workload.ntnxlab.local.key" \
+  --type=kubernetes.io/tls
