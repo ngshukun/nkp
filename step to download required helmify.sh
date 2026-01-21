@@ -10,6 +10,11 @@ sudo mv helmify /usr/local/bin/
 # 4. Verify installation
 helmify --version
 
+# download tree
+dnf download --resolve tree
+# moved to airgapped env
+sudo rpm -Uvh tree*.rpm
+
 # download nginx 
 # do this on the internet
 docker pull nginx:latest
@@ -85,3 +90,5 @@ source <(nkp completion bash)
 # --- AUTOCOMPLETE END ---
 
 source ~/.bashrc
+
+
