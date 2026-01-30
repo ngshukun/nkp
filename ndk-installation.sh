@@ -126,10 +126,138 @@ kubectl delete pod -l app.kubernetes.io/name=ndk -n ntnx-system
 # kubectl get storagecluster -n ntnx-system
 
 # Configuration of NDK
+# using mysql to test for NDK, it had to run as a deployment
+vi mysql-full-stack.yaml
+# 1. THE SERVICE (Headless service for StatefulSet)
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: ndk-test
+  labels:
+    app: mysql
+spec:
+  ports:
+  - port: 3306
+    name: mysql
+  clusterIP: None
+  selector:
+    app: mysql
+---
+# 2. THE STATEFULSET (Includes the PVC definition)
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-sts
+  namespace: ndk-test
+  labels:
+    app: mysql  # <--- This label is what the Application CR looks for
+spec:
+  serviceName: "mysql"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        # Using your local registry image
+        image: registry.ntnxlab.local/applications/mysql@sha256:df74fa37ff90ac07fb76363cfe272db16842aec38597efe7b454187a57e5a984
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "nutanix123"
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+  # This section creates the PVC automatically for the pod
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "nutanix-volume"
+      resources:
+        requests:
+          storage: 5Gi
+---
+# 3. THE APPLICATION CR (The missing link!)
+apiVersion: dataservices.nutanix.com/v1alpha1
+kind: Application
+metadata:
+  name: mysql-app
+  namespace: ndk-test
+spec:
+  # This tells NDK to protect all resources with label "app: mysql"
+  applicationSelector:
+    resourceLabelSelectors:
+      - labelSelector:
+          matchLabels:
+            app: mysql
 
-#to continue the actual configure of NDK 
+k apply -f mysql-full-stack.yaml
+# wait and watch for the pod running
+k get po -n ndk-test -w
+
+# create a protect plan to tell NDK 
+# how to backup this application
+vi protection-plan.yaml
+apiVersion: dataservices.nutanix.com/v1alpha1
+kind: ProtectionPlan
+metadata:
+  name: mysql-hourly-plan
+  namespace: ndk-test
+spec:
+  scheduleName: default-schedule
+  retentionPolicy:
+    retentionCount: 2
+
+k apply -f protection-plan.yaml
+
+# bind and snapshot
+vi protection-binding.yaml
+apiVersion: dataservices.nutanix.com/v1alpha1
+kind: AppProtectionPlan
+metadata:
+  name: mysql-binding
+  namespace: ndk-test
+spec:
+  applicationName: mysql-app  # Matches the Application CR we just created
+  protectionPlanNames:
+    - mysql-hourly-plan
+
+k apply -f protection-binding.yaml
 
 
+# Trigger Snapshot
+vi take-snapshot.yaml
+apiVersion: dataservices.nutanix.com/v1alpha1
+kind: ApplicationSnapshot
+metadata:
+  name: manual-test-snap-01
+  namespace: ndk-test
+spec:
+  source:
+    applicationRef:
+      name: mysql-app
+  expiresAfter: 2h #For example, 5m for 5 minutes or 2h for 2 hours
+
+
+k apply -f take-snapshot.yaml 
+
+# test for recovery
+vi restore-test.yaml
+apiVersion: dataservices.nutanix.com/v1alpha1
+kind: ApplicationSnapshotRestore
+metadata:
+  name: restore-test-01
+  namespace: ndk-test
+spec:
+  applicationSnapshotName: manual-test-snap-01
+  applicationSnapshotNamespace: ndk-test
 
 
 
