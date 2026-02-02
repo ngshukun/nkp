@@ -18,8 +18,8 @@ export NUTANIX_CLUSTER=kestrel01-2
 export NUTANIX_USER=admin
 export NUTANIX_PASSWORD=nx2Tech094!
 export SUBNET=NKP_Network
-export BASE_IMAGE="nkp-2.17-jumphost-noble-server-cloudimg-amd64.img"
-export OS=ubuntu-24.04
+export BASE_IMAGE="rhel-9.6-x86_64-kvm.qcow2"
+export OS=rhel-9.6
 export ARTIFACTS_DIRECTORY_FLAG="--artifacts-directory=/home/ubuntu/nkp-v2.17.0/image-artifacts"
 export BUNDLE_FLAG="bundle /home/ubuntu/nkp-v2.17.0/container-images/konvoy-image-bundle-v2.17.0.tar"
 
