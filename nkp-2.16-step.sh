@@ -51,8 +51,7 @@ sudo bash -c '
   grep -qxF "alias k=kubectl" /root/.bashrc || \
     echo "alias k=kubectl" >> /root/.bashrc
   grep -qxF "complete -o default -F __start_kubectl k" /root/.bashrc || \
-    echo "complete -o default -F __start_kubectl k" >> /root/.bashrc
-'
+    echo "complete -o default -F __start_kubectl k" >> /root/.bashrc'
 
 # Apply immediately without relogin ---
 source ~/.bashrc

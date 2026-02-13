@@ -32,11 +32,12 @@ data:
       - name: velero-backup #give a name for your BSL
         bucket: velero-backup #the name of the bucket, I will reference to the name I give for object
         provider: "aws"   # Corrected indentation (align with `name` and `bucket`)
-        default: true     # Corrected indentation
+        default: true
+        cacert: xxxx     # Corrected indentation
         config:
           region: us-east-1
           s3ForcePathStyle: "true"
-          insecureSkipTLSVerify: "true"
+          insecureSkipTLSVerify: "false"
           s3Url: "https://velero-backup.nkp.sub1.ntnxlab.local"   #FQDN/IP of your object and port
           profile: velero-backup #this profile name is the same as give in your secret,
         credential:
