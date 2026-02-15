@@ -127,8 +127,8 @@ export SSH_KEY_FILE=/home/nutanix/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
 export CLUSTER_NAME='rx-nkp-mgt' # <-- the name you create on the VM
-export CONTROL_PLANE_IP=10.21.102.101 # <-- your kubeVip
-export LB_IP_RANGE=10.21.102.102-10.21.102.105 # <-- your metallb IP range
+export CONTROL_PLANE_IP=10.161.44.101 # <-- your kubeVip
+export LB_IP_RANGE=10.161.44.102-10.161.44.105 # <-- your metallb IP range
 export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://10.21.102.154:9440/
 #export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
 #export NUTANIX_PC_CA_B64="$(base64 -w 0 < "$NUTANIX_PC_CA")"
