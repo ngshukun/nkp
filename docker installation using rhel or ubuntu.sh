@@ -12,9 +12,6 @@ sudo dnf install -y \
   --disablerepo='*' --nogpgcheck \
 && sudo systemctl daemon-reexec \
 && sudo systemctl enable --now docker
-
-
-# to install docker for ubuntu
 rpm -q container-selinux selinux-policy selinux-policy-base selinux-policy-targeted nftables python3-nftables
 ls -1 | egrep 'libnetfilter_(cthelper|cttimeout|queue)-.*\.rpm' || true
 sudo dnf install -y ./libnetfilter_cthelper-*.rpm ./libnetfilter_cttimeout-*.rpm ./libnetfilter_queue-*.rpm \
@@ -32,3 +29,5 @@ sudo dnf install -y \
 sudo systemctl daemon-reexec
 sudo systemctl enable --now docker
 docker version
+
+# to install docker for ubuntu
