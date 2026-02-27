@@ -6,28 +6,28 @@ sudo cp kubectl /usr/bin/
 
 vi .env
 # VM Setting 
-export CONTROL_PLANE_REPLICAS=1
+export CONTROL_PLANE_REPLICAS=3
 export CONTROL_PLANE_VCPUS=8
 export CONTROL_PLANE_CORES_PER_VCPU=1
 export CONTROL_PLANE_MEMORY_GIB=32
-export WORKER_REPLICAS=2
+export WORKER_REPLICAS=4
 export WORKER_VCPUS=16
 export WORKER_CORES_PER_VCPU=1
 export WORKER_MEMORY_GIB=32
-export SSH_KEY_FILE=/home/nutanix/.ssh/id_rsa.pub
+export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
-export CLUSTER_NAME='sk-upgrade' # <-- the name you create on the VM
-export CONTROL_PLANE_IP= 172.16.108.10/20/30/40/50/60/70/80/90/110 # <-- ivan provide 10 kubevip
-export LB_IP_RANGE=10.129.42.30-10.129.42.30 # <-- ivan provide 10 metallb
-export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://172.16.101.30:9440
+export CLUSTER_NAME='nkp-target' # <-- the name you create on the VM
+export CONTROL_PLANE_IP= 10.161.54.61 # <-- ivan provide 10 kubevip
+export LB_IP_RANGE=10.161.54.62-10.161.54.65 # <-- ivan provide 10 metallb
+export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://10.161.16.218::9440
 #export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
 #export NUTANIX_PC_CA_B64="$(base64 -w 0 < "$NUTANIX_PC_CA")"
-export NUTANIX_USER=shukun.ng
-export NUTANIX_PASSWORD=ntnx/4DEMO
-export IMAGE_NAME=nkp-rocky-9.6-release-cis-1.33.2 # to update
-export PRISM_ELEMENT_CLUSTER_NAME=SGNTNXWLPE_AZ03
-export SUBNET_NAME="VLAN108"
+export NUTANIX_USER=admin
+export NUTANIX_PASSWORD=nx2Tech198!
+export IMAGE_NAME=nkp-ubuntu-24.04-release-cis-1.34.1-20251206061851.qcow2 # to update
+export PRISM_ELEMENT_CLUSTER_NAME=kestrel06-2
+export SUBNET_NAME=nkp
 export NUTANIX_STORAGE_CONTAINER_NAME=SelfServiceContainer
 
 # Container Registry
@@ -37,8 +37,8 @@ export NUTANIX_STORAGE_CONTAINER_NAME=SelfServiceContainer
 # export REGISTRY_CA=/home/nutanix/certs/nsk-ca-chain.crt
 
 # In-cluster  registry (for NKP Images)
-export KONVOY_IMAGE_BUNDLE="./container-images/konvoy-image-bundle-v2.16.0.tar"
-export KOMMANDER_IMAGE_BUNDLE="./container-images/kommander-image-bundle-v2.16.0.tar"
+export KONVOY_IMAGE_BUNDLE="./container-images/konvoy-image-bundle-v2.17.0.tar"
+export KOMMANDER_IMAGE_BUNDLE="./container-images/kommander-image-bundle-v2.17.0.tar"
 
 # Mirror Registry
 # export REGISTRY_MIRROR_URL=https://registry.ntnxlab.local/external/  #<-- make sure fqdn can resolved by your dns, if not use IP
@@ -47,10 +47,10 @@ export KOMMANDER_IMAGE_BUNDLE="./container-images/kommander-image-bundle-v2.16.0
 # export REGISTRY_MIRROR_CA=/home/nutanix/certs/nsk-ca-chain.crt
 
 # Ingress
-# export CLUSTER_HOSTNAME="nkp-upgrade.ntnxlab.local"
-# export INGRESS_CERT=/home/nutanix/certs/nkp-upgrade.server.crt
-# export INGRESS_KEY=/home/nutanix/certs/nkp-upgrade.server.key
-# export INGRESS_CA=/home/nutanix/certs/nsk-ca-chain.crt
+export CLUSTER_HOSTNAME="nkp-target.ntnxlab.local"
+export INGRESS_CERT=/home/nutanix/nkp-v2.17.0/certs/server.crt
+export INGRESS_KEY=/home/nutanix/nkp-v2.17.0/certs/server.key
+export INGRESS_CA=/home/nutanix/nkp-v2.17.0/certs/ca-chain.crt
 
 nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --endpoint $NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT \
@@ -75,6 +75,14 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --csi-storage-container $NUTANIX_STORAGE_CONTAINER_NAME \
     --kubernetes-service-load-balancer-ip-range $LB_IP_RANGE \
     --self-managed \
+    --registry-url $REGISTRY_URL \
+    --registry-cacert $REGISTRY_CA \
+    --registry-username $REGISTRY_USERNAME \
+    --registry-password $REGISTRY_PASSWORD \
+    --cluster-hostname ${CLUSTER_HOSTNAME} \
+    --ingress-ca ${INGRESS_CA} \
+    --ingress-certificate ${INGRESS_CERT} \
+    --ingress-private-key ${INGRESS_KEY} \
     --bundle=${KONVOY_IMAGE_BUNDLE},${KOMMANDER_IMAGE_BUNDLE} \
     --airgapped \
     --insecure \

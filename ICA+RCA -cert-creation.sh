@@ -10,9 +10,9 @@ ROOT_DAYS=3650                             # ~10 years
 ICA_DAYS=3650
 SERVER_DAYS=825                            # ~27 months (common max for public TLS)
 # For v3_server.ext
-SERVER_CN="registry.ntnxlab.local"   # CN not used for matching, but keep it tidy
-SERVER_HOST1="registry.ntnxlab.local"
-SERVER_IP1="10.129.42.41"
+SERVER_CN="nkp-target.ntnxlab.local"   # CN not used for matching, but keep it tidy
+SERVER_HOST1="nkp-target.ntnxlab.local"
+SERVER_IP1="10.161.54.62"
 # SERVER_HOST2="*.ntnxlab.local"
 # SERVER_IP2="10.129.42.94"
 

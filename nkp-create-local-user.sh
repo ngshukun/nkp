@@ -35,4 +35,5 @@ subjects:
 kubectl apply -f admin-binding.yaml
 
 # you can login using shukun#local to test
+# iwillbeback4u
 
