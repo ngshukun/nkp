@@ -9,18 +9,18 @@ vi .env
 export CONTROL_PLANE_REPLICAS=3
 export CONTROL_PLANE_VCPUS=8
 export CONTROL_PLANE_CORES_PER_VCPU=1
-export CONTROL_PLANE_MEMORY_GIB=32
+export CONTROL_PLANE_MEMORY_GIB=16
 export WORKER_REPLICAS=4
 export WORKER_VCPUS=16
 export WORKER_CORES_PER_VCPU=1
-export WORKER_MEMORY_GIB=32
+export WORKER_MEMORY_GIB=16
 export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
 export CLUSTER_NAME='nkp-target' # <-- the name you create on the VM
-export CONTROL_PLANE_IP= 10.161.54.61 # <-- ivan provide 10 kubevip
+export CONTROL_PLANE_IP=10.161.54.61 # <-- ivan provide 10 kubevip
 export LB_IP_RANGE=10.161.54.62-10.161.54.65 # <-- ivan provide 10 metallb
-export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://10.161.16.218::9440
+export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://10.161.16.218:9440
 #export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
 #export NUTANIX_PC_CA_B64="$(base64 -w 0 < "$NUTANIX_PC_CA")"
 export NUTANIX_USER=admin
@@ -75,10 +75,6 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --csi-storage-container $NUTANIX_STORAGE_CONTAINER_NAME \
     --kubernetes-service-load-balancer-ip-range $LB_IP_RANGE \
     --self-managed \
-    --registry-url $REGISTRY_URL \
-    --registry-cacert $REGISTRY_CA \
-    --registry-username $REGISTRY_USERNAME \
-    --registry-password $REGISTRY_PASSWORD \
     --cluster-hostname ${CLUSTER_HOSTNAME} \
     --ingress-ca ${INGRESS_CA} \
     --ingress-certificate ${INGRESS_CERT} \
