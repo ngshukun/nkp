@@ -1,3 +1,8 @@
+# python3 -m venv myenv
+# source myenv/bin/activate
+ #when done run: deactivate
+
+
 import subprocess
 import yaml
 from datetime import datetime
