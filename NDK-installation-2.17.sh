@@ -104,19 +104,34 @@ SELECT * FROM cluster_validation;
 # READ BEFORE PROCEEDING
 
 # Overview of NDK CR
-# 1. StorageCluster:
+# 1. Application CR:
+# a inventory list of stuff you can put so that these will be backup
+# 2. StorageCluster:
 # The Warehouse,To connect the hardware. Kubernetes needs to know which Nutanix physical storage (Prism Element) it is allowed to use to store your data.
-# 2. Remote:
+# 3. Remote:
 # The GPS Address to find the other cluster. Without this, your primary cluster has no "phone number" or IP address to call when it wants to send data to a backup site.
-# 3. ReplicationTarget
+# 4. ReplicationTarget
 # The Room Number to specify the destination. It maps a specific "folder" (Namespace) on your local cluster to a "folder" on the remote cluster so data doesn't get lost or mixed up.
-# 4. JobScheduler:
+# 5. JobScheduler:
 # The Alarm Clock to automate the timing. It defines "when" things happen (e.g., every hour, every day) so you don't have to manually click "backup" every time.
-# 5. ProtectionPlan:
+# 6. ProtectionPlan:
 # The Manager to define the rules. It combines the "When" (Scheduler) with the "How" (Retention rules and Replication settings). It is the master policy for your data.
-# 6. AppProtectionPlan:
+# 7. AppProtectionPlan:
 #The Active Contract to start the work. This links a specific Application to a ProtectionPlan. Without this, the plan exists, but it isn't actually protecting anything yet.
+# 8. 
 
+
+# create Application CR
+vi mysql-application.yaml
+apiVersion: dataservices.nutanix.com/v1alpha1
+kind: Application
+metadata:
+  name: mysql
+  namespace: ndk-test #<-- namespace to be backup
+spec:
+  applicationSelector:  #< -- if just put nothing, it will backup everything in this namespace, if you need to customise, refer to ndk doc for details
+
+k apply -f mysql-application.yaml
 
 
 # create storagecluster, this is to register NDK with PC/PE, in plan english, this is where my data will live on the other hard disk
@@ -161,7 +176,9 @@ spec:
   serviceAccountName: default
 
 k apply -f replicationtarget.yaml
-# create job scheduler and create  protectionplan CR something like velero backupschedule
+
+
+# create job scheduler and create  protectionplan CR. something like velero backupschedule
 vi jobscheduler.yaml
 apiVersion: scheduler.nutanix.com/v1alpha1
 kind: JobScheduler
@@ -188,7 +205,7 @@ spec:
  replicationConfigs:
    - replicationTargetName: target # <-- name of the replicationtarget
 
-k apply -f replicationtarget.yaml
+k apply -f jobscheduler.yaml
 
 # create appprotectionplan, it puts all of the above into actions
 vi appprotectionplan.yaml
@@ -206,19 +223,9 @@ spec:
 
 
 
-# create Application CR
-vi mysql-application.yaml
-apiVersion: dataservices.nutanix.com/v1alpha1
-kind: Application
-metadata:
-  name: mysql
-  namespace: ndk-test
-spec:
-  applicationSelector:
 
-k apply -f mysql-application.yaml
 
-  # creat applicationsnapshot
+  # create applicationsnapshot
 vi applicationsnapshot.yaml
 apiVersion: dataservices.nutanix.com/v1alpha1
 kind: ApplicationSnapshot
@@ -228,7 +235,7 @@ metadata:
 spec:
   source:
     applicationRef:
-      name: mysql
+      name: mysql # <-- you refer to the applicationCR
   expiresAfter: 60m
 
 k apply -f applicationsnapshot.yaml
