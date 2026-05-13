@@ -1,9 +1,9 @@
 #Create a Nutanix Volumes CSI Storage Class
-vi storage-storage.yaml
+vi storage-class.yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-    name: nutanix-volume
+    name: nutanix-volumes
     annotations:
       storageclass.kubernetes.io/is-default-class: "true"
 parameters:
