@@ -1,0 +1,1 @@
+# resource required dso folder
