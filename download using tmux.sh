@@ -4,7 +4,7 @@ dnf install -y tmux
 tmux new -s download # you can set any name you want 
 # in your session you can perform download
 # to come out of the session and let tmux run in background
-# Ctrl+b d → detach
+# Ctrl+b, after that release the 2 and press d → detach
 # To check your session
 tmux attach -t download 
 # to exit the session after download
