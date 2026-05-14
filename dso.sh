@@ -492,6 +492,14 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
 
 # download kubeconfig from GUI
 
+
+# install helm
+cd /home/nutanix/
+tar -zxvf helm-v3.19.0-linux-amd64.tar.gz
+cp linux-amd64/helm /usr/bin/
+
+
+
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 
