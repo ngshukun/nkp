@@ -244,7 +244,7 @@ docker load -i konvoy-bootstrap-image-v2.16.1.tar && docker load -i nkp-image-bu
 
 
 
-# dsp-mgt 
+# dso-mgt 
 # VM Setting
 export CONTROL_PLANE_REPLICAS=3
 export CONTROL_PLANE_VCPUS=8
@@ -326,35 +326,90 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
 
 
 
-### License Key
-AEAAE-AAABR-XDMGJ-FKC46-2A4KM-MZARH-5TG5F
 ---------------------------------------------------------------------------------------------------------------------------------------
+# dso-wl cluster 
+
+cd /home/nutanix/nkp-v2.16.1/certs
+
+COUNTRY="SG"
+ORG="nutanix"
+ROOT_CN="nutanix"
+ICA_CN="nutanix"
+ROOT_DAYS=3650                             # ~10 years
+ICA_DAYS=3650
+SERVER_DAYS=825                            # ~27 months (common max for public TLS)
+# For v3_server.ext
+SERVER_CN="dso-wl.ntnxlab.local"  # < -- change  # CN not used for matching, but keep it tidy
+SERVER_HOST1="dso-wl.ntnxlab.local" # < -- change 
+SERVER_IP1="10.161.83.155"   # < -- change 
+# SERVER_HOST2="*.ntnxlab.local"
+# SERVER_IP2="10.161.83.140"
+# dso-workload cluster
+openssl genrsa -out dso-wl.ntnxlab.local-server.key 2048 # < -- change 
+
+# CSR
+openssl req -new -sha256 \
+  -key dso-wl.ntnxlab.local-server.key \
+  -subj "/C=$COUNTRY/O=$ORG/CN=$SERVER_CN" \
+  -out dso-wl.ntnxlab.local-server.csr
+
+# Build v3_server.ext. If you need to add more SANs, append lines:
+#   echo "DNS.2 = *.ntnxlab.local" >> v3_server.ext
+#   echo "IP.2  = 10.129.42.94"     >> v3_server.ext
+cat > dso-wl.ntnxlab.local-v3_server.ext <<EOF
+[v3_server]
+basicConstraints=CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth,clientAuth
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid,issuer
+subjectAltName=@alt_names
+
+[alt_names]
+DNS.1 = $SERVER_HOST1
+IP.1  = $SERVER_IP1
+EOF
+
+# Sign server cert with ICA
+openssl x509 -req -sha256 -days "$SERVER_DAYS" \
+  -in dso-wl.ntnxlab.local-server.csr \
+  -CA ica.crt -CAkey ica.key -CAcreateserial \
+  -extfile dso-wl.ntnxlab.local-v3_server.ext -extensions v3_server \
+  -out dso-wl.ntnxlab.local-server.crt
+
+# Full chains for deployment
+# - server-fullchain: server + ICA (what most servers present)
+# cat server.crt ica.crt > server-fullchain.crt
 
 
-vi .prd-env-cts
+# ---- Verification ----------------------------------------------------------
+echo "== Verify server against CA chain =="
+openssl verify -CAfile ca-chain.crt dso-wl.ntnxlab.local-server.crt
+
+
 # VM Setting
-export CONTROL_PLANE_REPLICAS=3
+export CONTROL_PLANE_REPLICAS=1
 export CONTROL_PLANE_VCPUS=8
-export CONTROL_PLANE_CORES_PER_VCPU=2
-export CONTROL_PLANE_MEMORY_GIB=64
-export WORKER_REPLICAS=4
+export CONTROL_PLANE_CORES_PER_VCPU=1
+export CONTROL_PLANE_MEMORY_GIB=8
+export WORKER_REPLICAS=2
 export WORKER_VCPUS=8
-export WORKER_CORES_PER_VCPU=2
-export WORKER_MEMORY_GIB=64
+export WORKER_CORES_PER_VCPU=1
+export WORKER_MEMORY_GIB=16
 export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
-export CLUSTER_NAME='prd-nkp-cts' # <-- the name you create on the VM
-export CONTROL_PLANE_IP=172.138.0.95 # <-- your kubeVip
-export LB_IP_RANGE=172.138.0.96-172.138.0.100 # <-- your metallb IP range
-export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://ctsmgtv0001.ntnxlab.local:9440
+export CLUSTER_NAME='dso-wl' # <-- the name you create on the VM
+export CONTROL_PLANE_IP=10.161.83.140 # <-- your kubeVip
+export LB_IP_RANGE=10.161.83.155-10.161.83.159 # <-- your metallb IP range
+export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://10.161.20.138:9440
 #export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
 #export NUTANIX_PC_CA_B64="$(base64 -w 0 < "$NUTANIX_PC_CA")"
 export NUTANIX_USER=admin
-export NUTANIX_PASSWORD=Nutanix/4all!
+export NUTANIX_PASSWORD='nx2Tech864!'
 export IMAGE_NAME=nkp-ubuntu-22.04-release-cis-1.33.5-20260504054007.qcow2
 export PRISM_ELEMENT_CLUSTER_NAME=kestrel21-1
-export SUBNET_NAME=vlan_tnt_cts_c1_01
+export SUBNET_NAME=VLAN293
 export NUTANIX_STORAGE_CONTAINER_NAME=SelfServiceContainer
 
 # Container Registry
@@ -364,8 +419,8 @@ export NUTANIX_STORAGE_CONTAINER_NAME=SelfServiceContainer
 # export REGISTRY_CA=/home/nutanix/certs/ca-chain.crt
 
 # In-cluster  registry (for NKP Images)
-#export KONVOY_IMAGE_BUNDLE="./container-images/konvoy-image-bundle-v2.16.0.tar"
-#export KOMMANDER_IMAGE_BUNDLE="./container-images/kommander-image-bundle-v2.16.0.tar"
+export KONVOY_IMAGE_BUNDLE="/home/nutanix/nkp-v2.16.1/container-images/konvoy-image-bundle-v2.16.1.tar"
+export KOMMANDER_IMAGE_BUNDLE="/home/nutanix/nkp-v2.16.1/container-images/kommander-image-bundle-v2.16.1.tar"
 
 # Mirror Registry
 # export REGISTRY_MIRROR_URL=https://registry.ntnxlab.local/mirror/  #<-- make sure fqdn can resolved by your dns, if not use IP
@@ -374,63 +429,12 @@ export NUTANIX_STORAGE_CONTAINER_NAME=SelfServiceContainer
 #export REGISTRY_MIRROR_CA=/home/nutanix/certs/ca-chain.crt
 
 # Ingress
-export CLUSTER_HOSTNAME="prd-nkp-cts.ntnxlab.local"
-export INGRESS_CERT=/home/nutanix/nkp-v2.16.1/certs/cts.crt
-export INGRESS_KEY=//home/nutanix/nkp-v2.16.1/certs/cts.key
+export CLUSTER_HOSTNAME="dso-wl.ntnxlab.local"
+export INGRESS_CERT=/home/nutanix/nkp-v2.16.1/certs/dso-wl.ntnxlab.local-server.crt
+export INGRESS_KEY=/home/nutanix/nkp-v2.16.1/certs/dso-wl.ntnxlab.local-server.key
 export INGRESS_CA=/home/nutanix/nkp-v2.16.1/certs/ca-chain.crt
 
-
-
----------------------------------------------------------------------------------------------------------------------------------------
-
-
-vi .nonprd-env-mgmt
-# VM Setting
-export CONTROL_PLANE_REPLICAS=3
-export CONTROL_PLANE_VCPUS=16
-export CONTROL_PLANE_CORES_PER_VCPU=1
-export CONTROL_PLANE_MEMORY_GIB=64
-export WORKER_REPLICAS=4
-export WORKER_VCPUS=16
-export WORKER_CORES_PER_VCPU=1
-export WORKER_MEMORY_GIB=64
-export SSH_KEY_FILE=/home/nutanix/.ssh/id_rsa.pub
-
-# Nutanix Prism Central
-export CLUSTER_NAME='npd-nkp-mgt' # <-- the name you create on the VM
-export CONTROL_PLANE_IP=172.136.128.25 # <-- your kubeVip
-export LB_IP_RANGE= 172.136.128.26-172.136.128.30 # <-- your metallb IP range
-export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://ctsmgtv0001.ntnxlab.local.local:9440
-#export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
-#export NUTANIX_PC_CA_B64="$(base64 -w 0 < "$NUTANIX_PC_CA")"
-export NUTANIX_USER=shukun
-export NUTANIX_PASSWORD=P@ssw0rd
-export IMAGE_NAME=nkp-ubuntu-22.04-release-cis-1.33.5-20260504054007.qcow2
-export PRISM_ELEMENT_CLUSTER_NAME=NKP
-export SUBNET_NAME=Machine_Network_42
-export NUTANIX_STORAGE_CONTAINER_NAME=SelfServiceContainer
-
-# Container Registry
-export REGISTRY_URL="https://registry.ntnxlab.local"  #<-- make sure fqdn can resolved by your dns, if not use IP
-export REGISTRY_USERNAME=shukun
-export REGISTRY_PASSWORD=Harbor12345
-export REGISTRY_CA=/home/nutanix/certs/ca-chain.crt
-
-# In-cluster  registry (for NKP Images)
-#export KONVOY_IMAGE_BUNDLE="./container-images/konvoy-image-bundle-v2.16.0.tar"
-#export KOMMANDER_IMAGE_BUNDLE="./container-images/kommander-image-bundle-v2.16.0.tar"
-
-# Mirror Registry
-export REGISTRY_MIRROR_URL=https://registry.ntnxlab.local/mirror/  #<-- make sure fqdn can resolved by your dns, if not use IP
-export REGISTRY_MIRROR_USERNAME=admin
-export REGISTRY_MIRROR_PASSWORD=Harbor12345
-export REGISTRY_MIRROR_CA=/home/nutanix/certs/ca-chain.crt
-
-# ingress
-export CLUSTER_HOSTNAME="prd-nkp-cts.ntnxlab.local"
-export INGRESS_CERT=/home/nutanix/nkp-v2.16.1/certs/server.crt
-export INGRESS_KEY=/home/nutanix/nkp-v2.16.1/certs/server.key
-export INGRESS_CA=/home/nutanix/nkp-v2.16.1/certs/ca-chain.crt
+cd /home/nutanix/nkp-v2.16.1/
 
 nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --endpoint $NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT \
@@ -463,6 +467,8 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --insecure \
     --timeout 120m
 
+
+---------------------------------------------------------------------------------------------------------------------------------------
 
 
 # update ipaddresspoll and l2advertisement for addition worker nodes
