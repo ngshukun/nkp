@@ -498,7 +498,12 @@ cd /home/nutanix/
 tar -zxvf helm-v3.19.0-linux-amd64.tar.gz
 cp linux-amd64/helm /usr/bin/
 
+docker load -i kasten-images-8.5.8.tar
+docker push your-internal-registry.local/kasten/...
 
+helm install k10 ./k10-8.5.8.tgz --namespace kasten-io \
+  --create-namespace \
+  --set global.airgapped.repository=your-internal-registry.local/kasten
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
