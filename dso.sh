@@ -79,19 +79,38 @@ sudo systemctl start docker
 sudo systemctl enable docker
 docker ps
 
-# install autocomplete
-tar -xvf bash-completion-pkg.tar
-dpkg -i ./bash-completion-pkg/*.deb
-ls /usr/share/bash-completion/bash_completion
-
-# untar nkp air-gapped bundle
+# Extract and move binaries
 tar -zxf nkp-air-gapped-bundle_v2.16.1_linux_amd64.tar.gz
-cd nkp-v2.16.1/
-cp cli/nkp /usr/bin/
-cp kubectl /usr/bin/
+cd /home/nutanix/nkp-v2.16.1/
+sudo cp cli/nkp /usr/bin/
+sudo cp kubectl /usr/bin/
 
-# Once you have the kubectl binary from NKP:
-./kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+# Install autocomplete packages
+cd /home/nutanix/
+tar -xvf bash-completion-pkg.tar
+sudo dpkg -i ./bash-completion-pkg/*.deb
+
+# Generate kubectl completion file
+kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+
+# UNCOMMENT the bash-completion block in .bashrc 
+# This finds the commented lines and removes the '#'
+sed -i '/#if \[ -f \/etc\/bash_completion \]/s/^#//' ~/.bashrc
+sed -i '/#! shopt -oq posix; then/s/^#//' ~/.bashrc
+sed -i '/#. \/etc\/bash_completion/s/^#//' ~/.bashrc
+sed -i '/#fi/s/^#//' ~/.bashrc
+
+# Add 'k' alias and alias-completion to .bashrc (if not already there)
+if ! grep -q "alias k='kubectl'" ~/.bashrc; then
+    echo "alias k='kubectl'" >> ~/.bashrc
+    echo 'complete -F __start_kubectl k' >> ~/.bashrc
+fi
+
+# Optional: Add NKP completion as well
+nkp completion bash | sudo tee /etc/bash_completion.d/nkp > /dev/null
+
+# Final Step: Source the changes for the current session
+source ~/.bashrc
 
 # create ssh key
 ssh-keygen -t rsa
@@ -253,7 +272,7 @@ export CONTROL_PLANE_MEMORY_GIB=16
 export WORKER_REPLICAS=4
 export WORKER_VCPUS=8
 export WORKER_CORES_PER_VCPU=1
-export WORKER_MEMORY_GIB=16
+export WORKER_MEMORY_GIB=8
 export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
@@ -325,10 +344,10 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --timeout 120m
 
 
-
+# License Key AEAAG-AAA65-W7DP4-VMH59-8AN23-NEWA4-ABF8P
 ---------------------------------------------------------------------------------------------------------------------------------------
 # dso-wl cluster 
-
+nkp create workspace dev-wl
 cd /home/nutanix/nkp-v2.16.1/certs
 
 COUNTRY="SG"
@@ -395,12 +414,12 @@ export CONTROL_PLANE_MEMORY_GIB=8
 export WORKER_REPLICAS=2
 export WORKER_VCPUS=8
 export WORKER_CORES_PER_VCPU=1
-export WORKER_MEMORY_GIB=16
+export WORKER_MEMORY_GIB=8
 export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
 export CLUSTER_NAME='dso-wl' # <-- the name you create on the VM
-export CONTROL_PLANE_IP=10.161.83.140 # <-- your kubeVip
+export CONTROL_PLANE_IP=10.161.83.141 # <-- your kubeVip
 export LB_IP_RANGE=10.161.83.155-10.161.83.159 # <-- your metallb IP range
 export NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT=https://10.161.20.138:9440
 #export NUTANIX_PC_CA=/path/to/pc_ca_chain.crt
@@ -434,9 +453,13 @@ export INGRESS_CERT=/home/nutanix/nkp-v2.16.1/certs/dso-wl.ntnxlab.local-server.
 export INGRESS_KEY=/home/nutanix/nkp-v2.16.1/certs/dso-wl.ntnxlab.local-server.key
 export INGRESS_CA=/home/nutanix/nkp-v2.16.1/certs/ca-chain.crt
 
+# Workspace
+export WORKSPACE_NAMESPACE=dev-wl-gpjcr-qrhm5
+
 cd /home/nutanix/nkp-v2.16.1/
 
 nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
+    --namespace $WORKSPACE_NAMESPACE \
     --endpoint $NUTANIX_PC_FQDN_ENDPOINT_WITH_PORT \
     --control-plane-endpoint-ip $CONTROL_PLANE_IP \
     --control-plane-vm-image $IMAGE_NAME \
@@ -465,8 +488,9 @@ nkp create cluster nutanix --cluster-name $CLUSTER_NAME \
     --bundle=${KONVOY_IMAGE_BUNDLE},${KOMMANDER_IMAGE_BUNDLE} \
     --airgapped \
     --insecure \
-    --timeout 120m
+    --timeout 200m
 
+# download kubeconfig from GUI
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
