@@ -249,11 +249,11 @@ docker load -i konvoy-bootstrap-image-v2.16.1.tar && docker load -i nkp-image-bu
 export CONTROL_PLANE_REPLICAS=3
 export CONTROL_PLANE_VCPUS=8
 export CONTROL_PLANE_CORES_PER_VCPU=1
-export CONTROL_PLANE_MEMORY_GIB=24
+export CONTROL_PLANE_MEMORY_GIB=16
 export WORKER_REPLICAS=4
 export WORKER_VCPUS=8
 export WORKER_CORES_PER_VCPU=1
-export WORKER_MEMORY_GIB=24
+export WORKER_MEMORY_GIB=16
 export SSH_KEY_FILE=/root/.ssh/id_rsa.pub
 
 # Nutanix Prism Central
