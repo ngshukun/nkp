@@ -1,0 +1,4 @@
+We all know the pain of putting together SSL certificate requests for our customers: chasing down the right SAN entries, hand-editing OpenSSL config files, and going back and forth before the CSR is finally clean enough to submit. It's been a headache for everyone, so I wanted to make it easier.
+Meet our new little helper: a Python script that takes care of the whole thing for you. Just run it, answer a few quick questions, and it creates three ready-to-go files for you: the private key, a matching server.conf, and the CSR itself.
+From there, simply pass the CSR to the SecTeam and they'll handle the rest with the CA. No more fiddly config editing, no more guesswork.
+How to run it: python3 gencsr.py
