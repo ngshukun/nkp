@@ -1,3 +1,4 @@
+# test
 # resource required dso folder
 # bash-completion-pkg.tar
 # helm-v3.19.0-linux-64.tar
